@@ -5,7 +5,10 @@ export class DataLabEntity{
   @PrimaryGeneratedColumn()
   Id: number;
 
-  @Column({ type: 'timestamp' })
+  // @Column({ type: 'timestamp' })
+  // ReceivedDate: string;
+
+  @Column({ type: 'datetime' })
   ReceivedDate: string;
 
   @Column() 

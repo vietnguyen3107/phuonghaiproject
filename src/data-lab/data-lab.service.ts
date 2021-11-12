@@ -16,6 +16,7 @@ export class DataLabService {
     return await this.dataLabRepo.find();
   }
 
+
   async search (): Promise<DataLabEntity []> {
 
     //const results = await this.dataLabRepo.createQueryBuilder() 
@@ -28,7 +29,10 @@ export class DataLabService {
     // .take(2).getMany();
 
     const entityManager = getManager();
-    const rawData = entityManager.query('select * from data_lab_entity where value<100')
+
+    //use convert_tz() function to convert to current vietnam timezone
+    //use date() function to extract only date
+    const rawData = entityManager.query("select Id, SensorsId, convert_tz(ReceivedDate, '+00:00', '+07:00') as DateTime, Value from data_lab_entity where date(ReceivedDate)>'2021-11-11'")
   
 
     return rawData
