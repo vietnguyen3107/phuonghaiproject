@@ -3,6 +3,7 @@ import {DataLabEntity } from './data-lab.entity'
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateResult, DeleteResult } from  'typeorm';
+import { getManager } from 'typeorm';
 
 @Injectable()
 export class DataLabService {
@@ -13,6 +14,24 @@ export class DataLabService {
 
   async findAll (): Promise<DataLabEntity []> {
     return await this.dataLabRepo.find();
+  }
+
+  async search (): Promise<DataLabEntity []> {
+
+    //const results = await this.dataLabRepo.createQueryBuilder() 
+    // const builder = this.dataLabRepo.createQueryBuilder("item")
+    // // const total = await builder.where("user.name like :name", { name: '%' + keyword + '%' }).getCount()
+    // const data = await builder
+    // .where("item.ReceivedDate='2021-11-12T06:30:00.000Z'")
+    // .orderBy('id', 'DESC')
+    // .skip(0)
+    // .take(2).getMany();
+
+    const entityManager = getManager();
+    const rawData = entityManager.query('select * from data_lab_entity where value<100')
+  
+
+    return rawData
   }
 
   async findOne (Id: number): Promise<DataLabEntity > {

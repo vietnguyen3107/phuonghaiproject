@@ -5,7 +5,7 @@ export class DataLabEntity{
   @PrimaryGeneratedColumn()
   Id: number;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'timestamp' })
   ReceivedDate: string;
 
   @Column() 
@@ -13,4 +13,7 @@ export class DataLabEntity{
  
   @Column()
   SensorsId: number;
+
+  //thêm 2 cột nữa là SensorType - string và DeviceSerialNumber string
+
 }

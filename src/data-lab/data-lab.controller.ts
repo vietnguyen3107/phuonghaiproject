@@ -14,6 +14,12 @@ export class DataLabController {
     return this.dataLabService.findAll()
   }
 
+  //endpoint: http://localhost:3000/datalab/search
+  @Get('/search')
+  search(): Promise<DataLabEntity []> {
+    return this.dataLabService.search()
+  }
+
   @Get(':Id')
   get(@Param() params) {
     return this.dataLabService.findOne(params.Id);
