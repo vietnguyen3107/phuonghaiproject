@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { LabControlModule } from './lab-control/lab-control.module';
-import { LabControlController } from './lab-control/lab-control.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DevicesModule } from './devices/devices.module';
-import { SensorsModule } from './sensors/sensors.module';
-import { DataLabModule } from './data-lab/data-lab.module';
+import { LabModule } from './lab/lab.module';
+import { SensorModule } from './sensor/sensor.module';
+import { DeviceModule } from './device/device.module';
+import { DatumModule } from './datum/datum.module';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -19,7 +19,7 @@ import { DataLabModule } from './data-lab/data-lab.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }), 
-    LabControlModule, DevicesModule, SensorsModule,  DataLabModule
+    LabModule, SensorModule, DeviceModule, DatumModule
   ],
   controllers: [AppController],
   providers: [AppService],
