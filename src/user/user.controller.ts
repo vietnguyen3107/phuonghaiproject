@@ -33,4 +33,10 @@ export class UserController {
   deleteUser(@Param() params) {
     return this.userService.delete(params.Id);
   }
+
+  @Post('/Login')
+  async login(@Body() user: User) {
+    return await this.userService.login(user)
+
+  }
 }
