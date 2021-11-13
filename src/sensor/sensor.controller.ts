@@ -3,7 +3,7 @@ import { SensorService } from './sensor.service'
 import { Sensor} from './sensor.entity'
 
 
-@Controller('sensor')
+@Controller('Sensors')
 export class SensorController {
   constructor(private readonly sensorService: SensorService) {
 

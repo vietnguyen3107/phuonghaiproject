@@ -2,14 +2,14 @@ version: '3'
 
 services: 
     db:
-
-        image: mysql
+        platform: linux/x86_64
+        image: mysql:8
         command: --default-authentication-plugin=mysql_native_password
         restart: always
         environment:
-            MYSQL_ROOT_PASSWORD: phuonghaidb
+            MYSQL_ROOT_PASSWORD: phuonghai
             MYSQL_DATABASE: phuonghaidb
-            MYSQL_USER: phuonghaidb
-            MYSQL_PASSWORD: phuonghaidb
+            MYSQL_USER: phuonghai
+            MYSQL_PASSWORD: phuonghai
         ports: 
             - 3309:3306

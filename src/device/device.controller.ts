@@ -3,7 +3,7 @@ import { DeviceService } from './device.service'
 import { Device } from './device.entity'
 
 
-@Controller('device')
+@Controller('Devices')
 export class DeviceController {
   constructor(private readonly deviceService: DeviceService) {
 

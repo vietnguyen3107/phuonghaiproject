@@ -3,7 +3,7 @@ import { LabService } from './lab.service'
 import { Lab } from './lab.entity'
 
 
-@Controller('lab')
+@Controller('Labs')
 export class LabController {
   constructor(private readonly labService: LabService) {
 
