@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { SensorService } from './sensor.service'
 import { Sensor} from './sensor.entity'
+import { UserService } from 'src/user/user.service';
 
 
 @Controller('Sensors')
@@ -8,6 +9,7 @@ export class SensorController {
   constructor(private readonly sensorService: SensorService) {
 
   }
+  
 
   @Get()
   findAll(): Promise<Sensor[]> {

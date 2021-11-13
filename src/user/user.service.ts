@@ -34,6 +34,29 @@ export class UserService {
     return await this.userRepo.delete(Id);
   }
 
+  async findByEmail(user: User): Promise<User> {
+    const dbUser = await this.userRepo.findOne({
+      where: {
+        Email: user.Email,
+      },
+    });
+
+    return dbUser;
+
+  }
+
+  async findByEmailAndPassword(user: User): Promise<User> {
+    const dbUser = await this.userRepo.findOne({
+      where: {
+        Email: user.Email,
+        Password: user.Password
+      },
+    });
+
+    return dbUser;
+
+  }
+
   async validate(user: User): Promise<User> {
     const dbUser = await this.userRepo.findOne({
       where: {

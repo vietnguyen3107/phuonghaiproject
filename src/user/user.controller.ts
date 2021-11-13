@@ -19,10 +19,10 @@ export class UserController {
     return this.userService.findOne(params.Id);
   }
 
-  @Post()
-  create(@Body() lab: User) {
-    return this.userService.create(lab);
-  }
+  // @Post()
+  // create(@Body() lab: User) {
+  //   return this.userService.create(lab);
+  // }
 
   @Put()
   update(@Body() lab: User) {
@@ -34,9 +34,21 @@ export class UserController {
     return this.userService.delete(params.Id);
   }
 
-  @Post('/Login')
+
+  //Auth controller
+  @Post('/Auth/Register')
+  async register(@Body() user: User) {
+    let dbUser =  await this.userService.findByEmail(user)
+    if (!dbUser) 
+      return this.userService.create(user);
+    else
+      return {status: 400, message: "Email already exists"}
+  }
+
+
+  @Post('/Auth/Login')
   async login(@Body() user: User) {
     return await this.userService.login(user)
-
   }
+
 }
