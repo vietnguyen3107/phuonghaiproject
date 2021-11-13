@@ -7,6 +7,7 @@ import { SensorModule } from './sensor/sensor.module';
 import { DeviceModule } from './device/device.module';
 import { DatumModule } from './datum/datum.module';
 import { getConnectionOptions } from 'typeorm';
+import { UserModule } from './user/user.module';
 
 
 @Module({
@@ -31,7 +32,7 @@ import { getConnectionOptions } from 'typeorm';
 
       synchronize: true,
     }),
-    LabModule, SensorModule, DeviceModule, DatumModule
+    LabModule, SensorModule, DeviceModule, DatumModule, UserModule
 
   ],
   controllers: [AppController],
