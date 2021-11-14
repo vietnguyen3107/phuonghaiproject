@@ -33,6 +33,7 @@ import { UserService } from './user/user.service';
 
 
       synchronize: true,
+      insecureAuth : true,
     }),
     LabModule, SensorModule, DeviceModule, DatumModule, UserModule,
 

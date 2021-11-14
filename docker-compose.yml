@@ -6,6 +6,8 @@ services:
         image: mysql:8
         command: --default-authentication-plugin=mysql_native_password
         restart: always
+        cap_add: 
+            - SYS_NICE  # CAP_SYS_NICE
         environment:
             MYSQL_ROOT_PASSWORD: phuonghai
             MYSQL_DATABASE: phuonghaidb
