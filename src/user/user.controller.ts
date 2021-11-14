@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { UserService } from './user.service'
 import { User } from './user.entity'
+import * as bcrypt from 'bcrypt';
+
 
 
 @Controller('Users')
@@ -39,8 +41,14 @@ export class UserController {
   @Post('/Auth/Register')
   async register(@Body() user: User) {
     let dbUser =  await this.userService.findByEmail(user)
-    if (!dbUser) 
-      return this.userService.create(user);
+    if (!dbUser) {
+      const hash = await bcrypt.hash(user.Password, 10);
+      user.Password = hash
+  
+       return this.userService.create(user);
+    }
+
+     
     else
       return {status: 400, message: "Email already exists"}
   }

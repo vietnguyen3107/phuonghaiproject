@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { UpdateResult, DeleteResult } from 'typeorm';
 import { getManager } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -46,14 +47,21 @@ export class UserService {
   }
 
   async findByEmailAndPassword(user: User): Promise<User> {
+
     const dbUser = await this.userRepo.findOne({
       where: {
-        Email: user.Email,
-        Password: user.Password
+        Email: user.Email
       },
     });
+    
+    if (!dbUser) return null
+    
+    const isMatch = await bcrypt.compare( user.Password, dbUser.Password,);
 
-    return dbUser;
+    if (isMatch) 
+      return dbUser
+    else
+      return null;
 
   }
 
@@ -80,15 +88,16 @@ export class UserService {
     // console.log(sql)
     // return await entityManager.query(sql)
 
-    const dbUser = await this.validate(user)
+    const dbUser = this.findByEmailAndPassword(user)
 
-    if (dbUser.Password===user.Password){
+
+    if (dbUser) {
       return dbUser
     }
-    else{
-      return {status: 400, message: "Wrong password"}
+    else {
+      return { status: 400, message: "Wrong password" }
     }
-    
+
 
   }
 
