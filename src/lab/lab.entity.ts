@@ -7,8 +7,8 @@ export class Lab{
   @Column('text' ) 
   Description: string;
 
-  @Column('text')
-  Devices: string;
+  // @Column('text')
+  // Devices: string;
 
   @Column('text')
   FriendlyName: string;
