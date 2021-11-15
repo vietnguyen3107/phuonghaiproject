@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-@Entity()
+@Entity('lab')
 export class Lab{
   @PrimaryGeneratedColumn()
   Id: number;
@@ -7,7 +7,7 @@ export class Lab{
   @Column('text' ) 
   Description: string;
 
-  @Column('text')
+  @Column( ) 
   Devices: string;
 
   @Column('text')

@@ -20,13 +20,13 @@ export class DeviceController {
   }
 
   @Post()
-  create(@Body() lab: Device) {
-    return this.deviceService.create(lab);
+  create(@Body() device: Device) {
+    return this.deviceService.create(device);
   }
 
   @Put()
-  update(@Body() lab: Device) {
-    return this.deviceService.update(lab);
+  update(@Body() device: Device) {
+    return this.deviceService.update(device);
   }
 
   @Delete(':Id')

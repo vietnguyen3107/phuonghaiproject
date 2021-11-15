@@ -10,7 +10,7 @@ export class Device{
   // @Column('text')
   // date: Date;
   @Column({ type: 'datetime' })
-  ReceivedDate: string;
+  DateSync: string;
 
   @Column('text') 
   Description: string;
@@ -25,7 +25,7 @@ export class Device{
   SerialNumber: string;
 
   @Column('text')
-  Sensors: string;
+  LabSerialNumber: string;
 
   @Column('text')
   Type: string;

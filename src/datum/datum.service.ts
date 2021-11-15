@@ -27,7 +27,7 @@ export class DatumService {
 
     const entityManager = getManager();
     let sql = `select * from datum 
-    where SensorType='${datum.SensorType}' and DeviceSerialNumber='${datum.DeviceSerialNumber}' 
+    where SensorType ='${datum.SensorType}' and DeviceSerialNumber='${datum.DeviceSerialNumber}' 
     and ReceivedDate='${datum.ReceivedDate}'`
 
     console.log(sql)

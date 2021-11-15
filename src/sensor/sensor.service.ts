@@ -23,7 +23,6 @@ export class SensorService {
   async create (task: Sensor): Promise<Sensor> {
     return await this.sensorRepo.save(task)
   }
-
   async update(task: Sensor): Promise<UpdateResult> {
     return await this.sensorRepo.update(task.Id, task);
   }
