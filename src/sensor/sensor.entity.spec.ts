@@ -1,7 +1,7 @@
-import { SensorEntity } from './sensor.entity';
+import { Sensor } from './sensor.entity';
 
 describe('SensorEntity', () => {
   it('should be defined', () => {
-    expect(new SensorEntity()).toBeDefined();
+    expect(new Sensor()).toBeDefined();
   });
 });
