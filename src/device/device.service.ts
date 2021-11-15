@@ -31,5 +31,9 @@ export class DeviceService {
   async delete(Id): Promise<DeleteResult> {
     return await this.deviceRepo.delete(Id);
   }
+
+  async findOneBySerialNumber (SerialNumber: string): Promise<Device> {
+    return await this.deviceRepo.findOne({SerialNumber: SerialNumber})
+  }
 }
 

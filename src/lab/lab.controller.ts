@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { LabService } from './lab.service'
 import { Lab } from './lab.entity'
 
@@ -7,6 +7,11 @@ import { Lab } from './lab.entity'
 export class LabController {
   constructor(private readonly labService: LabService) {
 
+  }
+
+  @Get('/Search?')
+  search(@Query('SerialNumber') SerialNumber: string): Promise<Lab> {
+    return this.labService.findOneBySerialNumber(SerialNumber)
   }
 
   @Get()

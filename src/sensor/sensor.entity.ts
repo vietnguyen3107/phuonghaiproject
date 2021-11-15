@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Device } from 'src/device/device.entity';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Sensor{
@@ -8,19 +9,23 @@ export class Sensor{
   @Column('text')
   Measure: string;
 
-  @Column()
-  Status: string;
+  // @Column()
+  // Status: string;
 
-  @Column()
-  Value: number;
-
-  @Column()
-  DeviceId: number;
+  // @Column()
+  // DeviceId: number;
 
   @Column('text') 
   SensorType: string;
 
   @Column('text') 
   DeviceSerialNumber: string;
+
+  @ManyToOne(type => Device, Device => Device.Id,  {eager: false})
+  @JoinColumn({name: "Device_Id", referencedColumnName: "Id"})    
+
+   // defining this is also optional because by default,
+   // the referenced foreign key is named as <column_name>_id or account_id
+  Device: Device;
 
 }

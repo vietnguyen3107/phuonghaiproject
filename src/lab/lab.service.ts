@@ -31,4 +31,9 @@ export class LabService {
   async delete(Id): Promise<DeleteResult> {
     return await this.labRepo.delete(Id);
   }
+
+  async findOneBySerialNumber (SerialNumber: string): Promise<Lab> {
+    return await this.labRepo.findOne({SerialNumber: SerialNumber})
+  }
+
 }

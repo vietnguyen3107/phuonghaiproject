@@ -10,9 +10,9 @@ export class Datum{
 
   @Column() 
   Value: number;
- 
-  @Column()
-  SensorId: number;
+
+  @Column('text') 
+  Status: string;
   
   @Column('text') 
   SensorType: string;
