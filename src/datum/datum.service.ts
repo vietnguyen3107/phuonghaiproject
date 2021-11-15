@@ -3,7 +3,7 @@ import { Datum } from './datum.entity'
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateResult, DeleteResult, getManager } from  'typeorm';
-import { raw } from 'express';
+
 
 
 
@@ -59,7 +59,24 @@ export class DatumService {
 
     let sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
     where SensorType='${sensorType}' and DeviceSerialNumber='${deviceSerialNumber}' 
-    order by ReceivedDate DESC limit 0,24`
+    order by ReceivedDate DESC limit 0,12`
+
+    const rawData = entityManager.query(sql)
+  
+    return rawData
+
+  }
+
+  async getDatumLast24Hours(sensorType: string, deviceSerialNumber: string): Promise<Datum[]> {
+    
+    const entityManager = getManager();
+
+    //use convert_tz() function to convert to current vietnam timezone
+    //use date() function to extract only date
+
+    let sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
+    where SensorType='${sensorType}' and DeviceSerialNumber='${deviceSerialNumber}' 
+    order by ReceivedDate DESC limit 0,288`
 
     const rawData = entityManager.query(sql)
   
@@ -76,7 +93,7 @@ export class DatumService {
 
     let sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
     where SensorType='${sensorType}' and DeviceSerialNumber='${deviceSerialNumber}' 
-    order by ReceivedDate DESC limit 0,168`
+    order by ReceivedDate DESC limit 0,2016`
 
     const rawData = entityManager.query(sql)
   
@@ -93,7 +110,7 @@ export class DatumService {
 
     let sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate  from datum 
     where SensorType='${sensorType}' and DeviceSerialNumber='${deviceSerialNumber}' 
-    order by ReceivedDate DESC limit 0,720`
+    order by ReceivedDate DESC limit 0,8640`
 
     const rawData = entityManager.query(sql)
   

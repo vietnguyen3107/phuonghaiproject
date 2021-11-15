@@ -15,6 +15,14 @@ export class DatumController {
     return this.datumService.getDatumLastHour(sensorType, deviceSerialNumber)
   }
 
+    //Local Endpoint: http://localhost:3000/Datums/LastHour?SensorType=CO2&DeviceSerialNumber=Serial1
+  //Remote Endpoint: https://thegreenlab.xyz/Datums/LastHour?SensorType=CO2&DeviceSerialNumber=Serial1
+  @Get('/Last24Hours?')
+  filter1(@Query('SensorType') sensorType: string, @Query('DeviceSerialNumber') deviceSerialNumber: string ): Promise<Datum[]> {
+    return this.datumService.getDatumLast24Hours(sensorType, deviceSerialNumber)
+  }
+
+
   //Local Endpoint: http://localhost:3000/Datums/Last7Days?SensorType=CO2&DeviceSerialNumber=Serial1
   //Remote Endpoint: https://thegreenlab.xyz/Datums/Last7Days?SensorType=CO2&DeviceSerialNumber=Serial1
   
