@@ -13,6 +13,7 @@ export class Datum{
  
   @Column()
   SensorId: number;
+  
   @Column('text') 
   SensorType: string;
 

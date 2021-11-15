@@ -5,9 +5,6 @@ export class Sensor{
   @PrimaryGeneratedColumn()
   Id: number;
 
-  @Column('text') 
-  Key: string;
-
   @Column('text')
   Measure: string;
 
@@ -19,5 +16,11 @@ export class Sensor{
 
   @Column()
   DeviceId: number;
+
+  @Column('text') 
+  SensorType: string;
+
+  @Column('text') 
+  DeviceSerialNumber: string;
 
 }
