@@ -57,9 +57,17 @@ export class DatumService {
     //use convert_tz() function to convert to current vietnam timezone
     //use date() function to extract only date
 
-    let sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
+    let sql = ''
+    if (sensorType!=='All'){
+       sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
     where SensorType='${sensorType}' and DeviceSerialNumber='${deviceSerialNumber}' 
     order by ReceivedDate DESC limit 0,12`
+    }
+    else{
+       sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
+    where DeviceSerialNumber='${deviceSerialNumber}' 
+    order by ReceivedDate DESC limit 0,12`
+    }
 
     const rawData = entityManager.query(sql)
   
@@ -74,9 +82,17 @@ export class DatumService {
     //use convert_tz() function to convert to current vietnam timezone
     //use date() function to extract only date
 
-    let sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
+    let sql = ''
+    if (sensorType!=='All'){
+       sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
     where SensorType='${sensorType}' and DeviceSerialNumber='${deviceSerialNumber}' 
     order by ReceivedDate DESC limit 0,288`
+    }
+    else{
+       sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
+    where DeviceSerialNumber='${deviceSerialNumber}' 
+    order by ReceivedDate DESC limit 0,288`
+    }
 
     const rawData = entityManager.query(sql)
   
@@ -91,9 +107,17 @@ export class DatumService {
     //use convert_tz() function to convert to current vietnam timezone
     //use date() function to extract only date
 
-    let sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
+    let sql = ''
+    if (sensorType!=='All'){
+       sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
     where SensorType='${sensorType}' and DeviceSerialNumber='${deviceSerialNumber}' 
     order by ReceivedDate DESC limit 0,2016`
+    }
+    else{
+       sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
+    where DeviceSerialNumber='${deviceSerialNumber}' 
+    order by ReceivedDate DESC limit 0,2016`
+    }
 
     const rawData = entityManager.query(sql)
   
