@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { UpdateResult, DeleteResult } from 'typeorm';
 import { getManager } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserService {
@@ -53,7 +53,7 @@ export class UserService {
         Email: user.Email
       },
     });
-    
+
     if (!dbUser) return null
     
     const isMatch = await bcrypt.compare( user.Password, dbUser.Password,);
