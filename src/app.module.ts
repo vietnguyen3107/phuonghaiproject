@@ -31,7 +31,7 @@ import { UserService } from './user/user.service';
       database: 'phuonghai',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
 
-
+      autoLoadEntities: true,
       synchronize: true,
     }),
     LabModule, SensorModule, DeviceModule, DatumModule, UserModule,

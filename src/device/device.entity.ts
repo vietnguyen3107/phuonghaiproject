@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Lab } from 'src/lab/lab.entity';
+import { Sensor } from 'src/sensor/sensor.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 // import { Transform } from 'class-transformer';
 
 @Entity('device')
@@ -30,8 +32,17 @@ export class Device{
   @Column('text')
   Type: string;
 
-  @Column()
-  LabId: number;
+  // @Column()
+  // LabId: number;
+
+  @ManyToOne(type => Lab, Lab => Lab.Id,  {eager: false})
+  @JoinColumn({name: "Lab_Id", referencedColumnName: "Id"})   
+   // defining this is also optional because by default,
+   // the referenced foreign key is named as <column_name>_id or account_id
+  Lab: Lab;
+
+  @OneToMany(type => Sensor, Sensor => Sensor.Device, {eager: true})
+  Sensors: Sensor[];
 
   @Column('text')
   LabSerialNumber: string;

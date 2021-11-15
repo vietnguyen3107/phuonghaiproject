@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Device } from 'src/device/device.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class Lab{
   @PrimaryGeneratedColumn()
@@ -24,5 +25,8 @@ export class Lab{
 
   @Column()
   IsActive: boolean;
+
+  @OneToMany(type => Device, Device => Device.Lab, {eager: true})
+  Devices: Device[];
 
 }

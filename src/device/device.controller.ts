@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { DeviceService } from './device.service'
 import { Device } from './device.entity'
 
@@ -7,6 +7,11 @@ import { Device } from './device.entity'
 export class DeviceController {
   constructor(private readonly deviceService: DeviceService) {
 
+  }
+
+  @Get('/Search?')
+  search(@Query('SerialNumber') SerialNumber: string): Promise<Device> {
+    return this.deviceService.findOneBySerialNumber(SerialNumber)
   }
 
   @Get()

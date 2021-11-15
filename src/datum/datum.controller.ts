@@ -55,6 +55,17 @@ export class DatumController {
     return this.datumService.create(datum);
   }
 
+  @Post('/Batch')
+  createBatch(@Body() datums: Datum[]) {
+
+    console.log(datums)
+    datums.forEach(d => {
+      this.datumService.create(d);
+    });
+    return datums;
+  }
+
+
   @Put()
   update(@Body() datum: Datum) {
     return this.datumService.update(datum);
