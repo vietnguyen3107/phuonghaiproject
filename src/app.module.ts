@@ -28,7 +28,7 @@ import { UserService } from './user/user.service';
       port: 3309,
       username: 'phuonghai',
       password: 'phuonghai',
-      database: 'phuonghaidb',
+      database: 'phuonghai',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
 
 
