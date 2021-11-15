@@ -8,7 +8,7 @@ services:
         restart: always
         environment:
             MYSQL_ROOT_PASSWORD: phuonghai
-            MYSQL_DATABASE: phuonghaidb
+            MYSQL_DATABASE: phuonghai
             MYSQL_USER: phuonghai
             MYSQL_PASSWORD: phuonghai
         ports: 
