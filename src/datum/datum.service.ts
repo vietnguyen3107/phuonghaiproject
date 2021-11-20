@@ -3,6 +3,9 @@ import { Datum } from './datum.entity'
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateResult, DeleteResult, getManager } from  'typeorm';
+import { LargeNumberLike } from 'crypto';
+import { Lab } from 'src/lab/lab.entity';
+import { LabService } from 'src/lab/lab.service';
 
 
 
@@ -12,6 +15,8 @@ export class DatumService {
   constructor(
     @InjectRepository(Datum)
     private readonly datumRepo: Repository<Datum>,
+
+    private readonly labService: LabService,
   ) {}
 
   async findAll (): Promise<Datum[]> {
@@ -142,6 +147,59 @@ export class DatumService {
 
   }
 
+  async getLastestDataByDevice(deviceSerialNumber: string): Promise<Datum[]> {
+    
+    const entityManager = getManager();
+
+    //use convert_tz() function to convert to current vietnam timezone
+    //use date() function to extract only date
+
+    let sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate  from datum 
+    where DeviceSerialNumber='${deviceSerialNumber}' 
+    order by ReceivedDate DESC limit 0,1`
+
+    const rawData = entityManager.query(sql)
+  
+    return rawData
+
+  }
+
+
+
+  
+
+  // async getAllLatestData(LabSerialNumber: string): Promise<Lab> {
+    
+  //   const entityManager = getManager();
+
+  //   let sql = `select t.SensorType, t.DeviceSerialNumber, t.ReceivedDate, t.Value, t.Status
+  //   from datum t
+  //   inner join (
+  //       select SensorType, DeviceSerialNumber, max(ReceivedDate) as MaxDate
+  //       from datum
+  //       group by SensorType, DeviceSerialNumber
+  //   ) tm on t.SensorType = tm.SensorType and t.DeviceSerialNumber=tm.DeviceSerialNumber and t.ReceivedDate = tm.MaxDate`
+
+  //   console.log(sql)
+  //   const rawData = entityManager.query(sql)
+  //   const dict = {}
+  //   rawData.forEach(row => {
+      
+  //   });
+  
+  //   const lab = await this.labService.findOneBySerialNumber(LabSerialNumber)
+
+  //   lab.Devices.forEach(d=>{
+  //     d.Sensors.forEach(s => {
+  //       s.LatestDatum = rawData
+  //     });)
+  //   })
+
+   
+  
+  //   return lab
+
+  // }
 
 
 
