@@ -7,5 +7,7 @@ import { Lab } from './lab.entity';
   imports: [TypeOrmModule.forFeature([Lab])],
   providers: [LabService],
   controllers: [LabController],
+  exports: [LabService]
 })
+
 export class LabModule {}
