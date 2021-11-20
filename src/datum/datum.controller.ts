@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { DatumService } from './datum.service'
 import { Datum } from './datum.entity'
+import { Lab } from 'src/lab/lab.entity';
 
 
 @Controller('Datums')
@@ -39,6 +40,15 @@ export class DatumController {
   }
 
 
+  // @Get('/AllLatestData')
+  // filter4(): Promise<Lab> {
+  //   return this.datumService.getAllLatestData("1")
+  // }
+
+  @Get('/LastestDataByDevice?')
+  filter5( @Query('DeviceSerialNumber') deviceSerialNumber: string ): Promise<Datum[]> {
+    return this.datumService.getLastestDataByDevice(deviceSerialNumber)
+  }
 
   @Get()
   findAll(): Promise<Datum[]> {
