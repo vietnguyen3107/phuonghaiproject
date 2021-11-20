@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { isEmpty } from 'rxjs';
+import { Column, Entity, IsNull, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Datum{
@@ -17,7 +18,7 @@ export class Datum{
   @Column('text') 
   SensorType: string;
 
-  @Column('text') 
+  @Column('text', {nullable: true}) 
   Unit: string;
 
   @Column('text') 

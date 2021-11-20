@@ -154,9 +154,24 @@ export class DatumService {
     //use convert_tz() function to convert to current vietnam timezone
     //use date() function to extract only date
 
-    let sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate  from datum 
-    where DeviceSerialNumber='${deviceSerialNumber}' 
-    order by ReceivedDate DESC limit 0,1`
+    // let sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate  from datum 
+    // where DeviceSerialNumber='${deviceSerialNumber}' 
+    // order by ReceivedDate DESC limit 0,1`
+
+    let sql = `select t.SensorType, t.DeviceSerialNumber, t.ReceivedDate, t.Value, t.Status, t.Unit
+    from datum t
+    inner join (
+        select SensorType, DeviceSerialNumber, max(ReceivedDate) as MaxDate
+        from datum
+        group by SensorType, DeviceSerialNumber
+    ) tm on t.SensorType = tm.SensorType and t.DeviceSerialNumber=tm.DeviceSerialNumber 
+    and t.ReceivedDate = tm.MaxDate`
+
+    if (deviceSerialNumber && deviceSerialNumber!==''){
+      sql += ` and t.DeviceSerialNumber = '${deviceSerialNumber}'`
+    }
+
+    console.log(sql)
 
     const rawData = entityManager.query(sql)
   
