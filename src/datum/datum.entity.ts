@@ -18,6 +18,9 @@ export class Datum{
   SensorType: string;
 
   @Column('text') 
+  Unit: string;
+
+  @Column('text') 
   DeviceSerialNumber: string;
 }
 
