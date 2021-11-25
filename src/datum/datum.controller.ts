@@ -2,8 +2,11 @@ import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/
 import { DatumService } from './datum.service'
 import { Datum } from './datum.entity'
 import { Lab } from 'src/lab/lab.entity';
+import { Between } from 'typeorm';
+import { addYears, subYears } from 'date-fns';
 
-
+export const AfterDate = (date: Date) => Between(date, addYears(date, 100));
+export const BeforeDate = (date: Date) => Between(subYears(date, 100), date);
 @Controller('Datums')
 export class DatumController {
   constructor(private readonly datumService: DatumService) {
@@ -40,10 +43,12 @@ export class DatumController {
   }
 
 
-  // @Get('/AllLatestData')
-  // filter4(): Promise<Lab> {
-  //   return this.datumService.getAllLatestData("1")
-  // }
+  @Get('/EverageData?')
+  filter4(@Query('SensorType') sensorType: string, @Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<Datum[]> {
+    console.log("hihi")
+    return this.datumService.getEverageData(sensorType, deviceSerialNumber, startDate, endDate)
+    
+  }
 
   @Get('/LastestDataByDevice?')
   filter5( @Query('DeviceSerialNumber') deviceSerialNumber: string ): Promise<Datum[]> {
@@ -59,6 +64,7 @@ export class DatumController {
   get(@Param() params) {
     return this.datumService.findOne(params.Id);
   }
+
 
   @Post()
   create(@Body() datum: Datum) {

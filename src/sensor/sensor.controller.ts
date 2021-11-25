@@ -26,6 +26,16 @@ export class SensorController {
     return this.sensorService.create(sensor);
   }
 
+  @Post('/Batch')
+  createBatch(@Body() sensors: Sensor[]) {
+
+    
+    sensors.forEach(d => {
+      this.sensorService.create(d);
+    });
+    return sensors;
+  }
+
   @Put()
   update(@Body() sensor: Sensor) {
     return this.sensorService.update(sensor);
