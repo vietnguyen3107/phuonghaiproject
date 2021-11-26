@@ -160,7 +160,7 @@ export class DatumService {
  
     // order by ReceivedDate DESC limit 0,8640`
 
-    let sql = `select DATE(convert_tz(ReceivedDate, '+0:00', '+7:00')) as DateOnly, AVG(Value) from datum 
+    let sql = `select DATE_FORMAT(convert_tz(ReceivedDate, '+0:00', '+7:00'), '%Y-%m-%d') as DateOnly, AVG(Value) as Average from datum 
     where SensorType='${sensorType}' and DeviceSerialNumber='${deviceSerialNumber}' 
    and ReceivedDate between '${stDate}' and '${enDate}' 
    group by DateOnly`
@@ -194,8 +194,6 @@ export class DatumService {
     if (deviceSerialNumber && deviceSerialNumber!==''){
       sql += ` and t.DeviceSerialNumber = '${deviceSerialNumber}'`
     }
-
-    console.log(sql)
 
     const rawData = entityManager.query(sql)
   

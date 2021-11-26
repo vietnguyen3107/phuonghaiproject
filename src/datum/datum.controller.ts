@@ -3,10 +3,7 @@ import { DatumService } from './datum.service'
 import { Datum } from './datum.entity'
 import { Lab } from 'src/lab/lab.entity';
 import { Between } from 'typeorm';
-import { addYears, subYears } from 'date-fns';
 
-export const AfterDate = (date: Date) => Between(date, addYears(date, 100));
-export const BeforeDate = (date: Date) => Between(subYears(date, 100), date);
 @Controller('Datums')
 export class DatumController {
   constructor(private readonly datumService: DatumService) {
@@ -45,7 +42,6 @@ export class DatumController {
 
   @Get('/EverageData?')
   filter4(@Query('SensorType') sensorType: string, @Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<Datum[]> {
-    console.log("hihi")
     return this.datumService.getEverageData(sensorType, deviceSerialNumber, startDate, endDate)
     
   }
