@@ -43,7 +43,7 @@ export class UserController {
     let dbUser =  await this.userService.findByEmail(user)
     if (!dbUser) {
       const hash = await bcrypt.hash(user.Password, 10);
-      user.Password = hash
+      user.Password = await hash
   
        return this.userService.create(user);
     }
