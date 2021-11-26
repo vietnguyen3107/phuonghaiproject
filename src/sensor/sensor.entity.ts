@@ -10,8 +10,8 @@ export class Sensor{
   @Column('text')
   Measure: string;
 
-  // @Column()
-  // Status: string;
+  @Column()
+  Status: string;
 
   // @Column()
   // DeviceId: number;
@@ -31,6 +31,7 @@ export class Sensor{
 
   @OneToOne(type=>Datum)
   LatestDatum: Datum;
+
 
 
 }
