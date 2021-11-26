@@ -164,7 +164,7 @@ export class DatumService {
     where SensorType='${sensorType}' and DeviceSerialNumber='${deviceSerialNumber}' 
    and ReceivedDate between '${stDate}' and '${enDate}' 
    group by DateOnly`
-    console.log(sql)
+    //console.log(sql)
     const rawData = entityManager.query(sql)
   
     return rawData
