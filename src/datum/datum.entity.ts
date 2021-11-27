@@ -12,16 +12,16 @@ export class Datum{
   @Column() 
   Value: number;
 
-  @Column('text') 
+  @Column({ length: 10 })
   Status: string;
   
-  @Column('text') 
+  @Column({ length: 15 })
   SensorType: string;
 
-  @Column('text', {nullable: true}) 
+  @Column({ length: 10 })
   Unit: string;
 
-  @Column('text') 
+  @Column({ length: 20 })
   DeviceSerialNumber: string;
 }
 
