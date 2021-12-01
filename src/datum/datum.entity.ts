@@ -9,7 +9,7 @@ export class Datum{
   @Column({ type: 'datetime' })
   ReceivedDate: string;
 
-  @Column() 
+  @Column("float") 
   Value: number;
 
   @Column({ length: 10 })
