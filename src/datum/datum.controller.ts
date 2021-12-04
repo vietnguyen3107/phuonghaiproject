@@ -45,6 +45,16 @@ export class DatumController {
     return this.datumService.getAverageData(sensorType, deviceSerialNumber, startDate, endDate)
     
   }
+  @Get('/MaxData?')
+  filter6(@Query('SensorType') sensorType: string, @Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<Datum[]> {
+    return this.datumService.getMaxData(sensorType, deviceSerialNumber, startDate, endDate)
+    
+  }
+  @Get('/MinData?')
+  filter7(@Query('SensorType') sensorType: string, @Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<Datum[]> {
+    return this.datumService.getMaxData(sensorType, deviceSerialNumber, startDate, endDate)
+    
+  }
 
   @Get('/LastestDataByDevice?')
   filter5( @Query('DeviceSerialNumber') deviceSerialNumber: string ): Promise<Datum[]> {
