@@ -32,7 +32,7 @@ import { UserService } from './user/user.service';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
 
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     }),
     LabModule, SensorModule, DeviceModule, DatumModule, UserModule,
 

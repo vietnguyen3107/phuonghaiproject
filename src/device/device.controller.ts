@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { DeviceService } from './device.service'
 import { Device } from './device.entity'
+import { Sensor } from 'src/sensor/sensor.entity';
 
 
 @Controller('Devices')
@@ -38,4 +39,6 @@ export class DeviceController {
   deleteUser(@Param() params) {
     return this.deviceService.delete(params.Id);
   }
+ 
+
 }
