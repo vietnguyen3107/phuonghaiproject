@@ -147,7 +147,7 @@ export class DatumService {
 
   }
 
-  async getAverageData(sensorType: string, deviceSerialNumber: string, startDate: string, endDate: string): Promise<any> {
+  async getStatiscalData( startDate: string, endDate: string): Promise<any> {
 
     const entityManager = getManager();
     const stDate = startDate + "T00:00:00"
