@@ -153,6 +153,7 @@ export class DatumService {
     const stDate = startDate + "T00:00:00"
     const enDate = endDate + "T23:59:00"
 
+<<<<<<< Updated upstream
     let sql = `select DATE_FORMAT(convert_tz(ReceivedDate, '+0:00', '+7:00'), '%Y-%m-%d') as DateOnly, 
     Max(SensorType) as SensorType, Max(DeviceSerialNumber) as DeviceSerialNumber,
     AVG(Value) as Average, MIN(Value) as Minimum, MAX(Value) as Maximum
@@ -160,6 +161,23 @@ export class DatumService {
     where ReceivedDate between '${stDate}' and '${enDate}' 
    group by DateOnly, SensorType, DeviceSerialNumber 
    order by  DeviceSerialNumber, SensorType`
+=======
+    // let sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate  from datum 
+    // where SensorType='${sensorType}' and ReceivedDate='${receivedDate}' between createdAt >= 'after' AND createdAt < 'before'
+ 
+    // order by ReceivedDate DESC limit 0,8640`
+
+    let sql = `select DATE_FORMAT(convert_tz(ReceivedDate, '+0:00', '+7:00'), '%Y-%m-%d') as DateOnly, 
+    AVG(Value) as Average,
+   
+
+    from datum 
+    where SensorType='${sensorType}' and DeviceSerialNumber='${deviceSerialNumber}' 
+   and ReceivedDate between '${stDate}' and '${enDate}' 
+   group by DateOnly`
+    //console.log(sql)
+    const rawData = entityManager.query(sql)
+>>>>>>> Stashed changes
   
     const rawData = await entityManager.query(sql)
 
@@ -195,10 +213,13 @@ export class DatumService {
   }
 
 
+<<<<<<< Updated upstream
 
 
 
 
+=======
+>>>>>>> Stashed changes
   async getLastestDataByDevice(deviceSerialNumber: string): Promise<Datum[]> {
 
     const entityManager = getManager();
