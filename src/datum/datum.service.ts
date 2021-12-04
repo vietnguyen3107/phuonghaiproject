@@ -193,39 +193,9 @@ export class DatumService {
     return newData
 
   }
-  async getMaxData(sensorType: string,deviceSerialNumber: string, startDate: string, endDate: string): Promise<Datum[]> {
-      
-    const entityManager = getManager();
-    const stDate = startDate + "T00:00:00"
-    const enDate = endDate + "T23:59:00"
 
-    let sql = `select DATE_FORMAT(convert_tz(ReceivedDate, '+0:00', '+7:00'), '%Y-%m-%d') as DateOnly, MAX(Value) as Maximum from datum 
-    where SensorType='${sensorType}' and DeviceSerialNumber='${deviceSerialNumber}' 
-   and ReceivedDate between '${stDate}' and '${enDate}' 
-   group by DateOnly`
-    //console.log(sql)
-    const rawData = entityManager.query(sql)
-  
-    return rawData
 
-  }
 
-  async getMinData(sensorType: string,deviceSerialNumber: string, startDate: string, endDate: string): Promise<Datum[]> {
-      
-    const entityManager = getManager();
-    const stDate = startDate + "T00:00:00"
-    const enDate = endDate + "T23:59:00"
-
-    let sql = `select DATE_FORMAT(convert_tz(ReceivedDate, '+0:00', '+7:00'), '%Y-%m-%d') as DateOnly, MIN(Value) as Minimum from datum 
-    where SensorType='${sensorType}' and DeviceSerialNumber='${deviceSerialNumber}' 
-   and ReceivedDate between '${stDate}' and '${enDate}' 
-   group by DateOnly`
-    //console.log(sql)
-    const rawData = entityManager.query(sql)
-  
-    return rawData
-
-  }
 
 
 
