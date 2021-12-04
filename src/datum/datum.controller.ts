@@ -40,9 +40,9 @@ export class DatumController {
   }
 
 
-  @Get('/EverageData?')
-  filter4(@Query('SensorType') sensorType: string, @Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<Datum[]> {
-    return this.datumService.getEverageData(sensorType, deviceSerialNumber, startDate, endDate)
+  @Get('/AverageData?')
+  filter4(@Query('SensorType') sensorType: string, @Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<any> {
+    return this.datumService.getAverageData(sensorType, deviceSerialNumber, startDate, endDate)
     
   }
 
