@@ -196,9 +196,6 @@ export class DatumService {
 
 
 
-
-
-
   async getLastestDataByDevice(deviceSerialNumber: string): Promise<Datum[]> {
 
     const entityManager = getManager();

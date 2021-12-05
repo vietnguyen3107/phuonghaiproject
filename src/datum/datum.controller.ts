@@ -40,7 +40,7 @@ export class DatumController {
   }
 
 
-  @Get('/StatisData?')
+  @Get('/StatisticData?')
   filter4( @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<any> {
     return this.datumService.getStatiscalData( startDate, endDate)
   }
