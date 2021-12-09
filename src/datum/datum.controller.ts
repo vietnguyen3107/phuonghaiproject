@@ -42,7 +42,12 @@ export class DatumController {
 
   @Get('/StatisticData?')
   filter4( @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<any> {
-    return this.datumService.getStatiscalData( startDate, endDate)
+    return this.datumService.getStatisticData( startDate, endDate)
+  }
+
+  @Get('/StatisticDataByDevice?')
+  filter7( @Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<any> {
+    return this.datumService.getStatisticDataByDevice( deviceSerialNumber,startDate, endDate)
   }
 
   @Get('/LastestDataByDevice?')
