@@ -147,7 +147,7 @@ export class DatumService {
 
   }
 
-  async getStatiscalData( startDate: string, endDate: string): Promise<any> {
+  async getStatisticData(startDate: string, endDate: string): Promise<any> {
 
     const entityManager = getManager();
     const stDate = startDate + "T00:00:00"
@@ -160,9 +160,9 @@ export class DatumService {
     where ReceivedDate between '${stDate}' and '${enDate}' 
    group by DateOnly, SensorType, DeviceSerialNumber 
    order by  DeviceSerialNumber, SensorType`
-  
+    // console.log(sql)
     const rawData = await entityManager.query(sql)
-
+    // console.log(rawData)
     var newData = { name: "root", children: [] },
       levels = ["DeviceSerialNumber", "SensorType", "DateOnly"];
 
@@ -189,7 +189,7 @@ export class DatumService {
         if (depth === levels.length - 1) depthCursor.push({ DateOnly: d.DataOnly, AVG: d.Average, MIN: d.Minimum, MAX: d.Maximum });
       });
     });
-
+    // console.log(newData)
     return newData
 
   }
@@ -225,23 +225,58 @@ export class DatumService {
     return rawData
 
   }
+  async getStatisticDataByDevice(deviceSerialNumber: string, startDate: string, endDate: string): Promise<any> {
 
-}
-  // console.log(JSON.stringify(rawData))
+    const entityManager = getManager();
+    const stDate = startDate + "T00:00:00"
+    const enDate = endDate + "T23:59:00"
 
-    //     const jsonstr = await JSON.stringify(rawData)
+    let sql = `select DATE_FORMAT(convert_tz(ReceivedDate, '+0:00', '+7:00'), '%Y-%m-%d') as DateOnly, 
+    Max(SensorType) as SensorType, Max(DeviceSerialNumber) as DeviceSerialNumber,
+    AVG(Value) as Average, MIN(Value) as Minimum, MAX(Value) as Maximum
+    from datum 
+    where DeviceSerialNumber='${deviceSerialNumber}' and ReceivedDate between '${stDate}' and '${enDate}' 
+   group by DateOnly, SensorType, DeviceSerialNumber 
+   order by  DeviceSerialNumber, SensorType`
 
-    //     const json = await JSON.parse(jsonstr)
-    //     let keys = { DeviceSerialNumber: 'sensors', SensorType: 'Value' } // or more if required
-    //     let result = []
-    //     let temp = { _: result };
+    const rawData = await entityManager.query(sql)
 
-    //     json.forEach(function (object) {
-    //     Object.keys(keys).reduce(function (level, key) {
-    //         if (!level[object[key]]) {
-    //             level[object[key]] = { _: [] };
-    //             level._.push({ [key]: object[key], [keys[key]]: level[object[key]]._ });
-    //         }
-    //         return level[object[key]];
-    //     }, temp)._.push({ SensorType: object.SensorType, ReceivedDate: object.ReceivedDate, Value: object.Value, Status: object.Status, Unit: object.Unit });
-    // });
+   var newData = { name: "root", children: [] },
+      levels = ["DeviceSerialNumber", "SensorType"];
+
+    // For each data row, loop through the expected levels traversing the output tree
+    rawData.forEach(function (d) {
+      // Keep this as a reference to the current level
+      var depthCursor = newData.children;
+      // Go down one level at a time
+      levels.forEach(function (property, depth) {
+
+        // Look to see if a branch has already been created
+        var index;
+        depthCursor.forEach(function (child, i) {
+          if (d[property] == child.name) index = i;
+        });
+        // Add a branch if it isn't there
+        if (isNaN(index)) {
+          depthCursor.push({ name: d[property], children: [] });
+          index = depthCursor.length - 1;
+        }
+        // Now reference the new child array as we go deeper into the tree
+        depthCursor = depthCursor[index].children;
+        // This is a leaf, so add the last element to the specified branch
+        if (depth === levels.length - 1) depthCursor.push({ DateOnly: d.DateOnly, AVG: d.Average, MIN: d.Minimum, MAX: d.Maximum });
+      });
+    });
+    // console.log(newData)
+    let newnewData = newData.children[0].children
+    let returnjson = []
+    
+    for(let i=0; i<newnewData.length; i++){
+      returnjson.push({"sensorType": newnewData[i].name, "data": newnewData[i].children})
+    }
+
+    return returnjson
+
+  }
+};
+
