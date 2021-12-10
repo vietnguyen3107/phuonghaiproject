@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
+import { Controller, StreamableFile, Get, Post, Put, Delete, Body, Param, Query, Res } from '@nestjs/common';
 import { DatumService } from './datum.service'
 import { Datum } from './datum.entity'
 import { Lab } from 'src/lab/lab.entity';
 import { Between } from 'typeorm';
+
+import { createReadStream } from 'fs';
+import { join } from 'path';
 
 @Controller('Datums')
 export class DatumController {
@@ -55,6 +58,59 @@ export class DatumController {
     return this.datumService.getLastestDataByDevice(deviceSerialNumber)
   }
 
+  @Get('/StatisticDataBySensor?')
+  async filter8( @Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<any> {
+    return this.datumService.getStatisticDataBySensor( deviceSerialNumber,startDate, endDate)
+  }
+
+  @Get('/DownloadData1')
+  getFile(): StreamableFile {
+    const file = createReadStream(join(process.cwd(), 'out.csv'));
+
+    return new StreamableFile(file);
+
+  }
+
+  @Get('/DataByDate?')
+  async filter9(@Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<StreamableFile> {
+
+    const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+
+    const fileName = `DataFile_` + new Date() + '.csv'
+
+    const csvWriter = createCsvWriter({
+      path: fileName,
+      header: [
+       
+        {id: "DeviceSerialNumber", title: "DeviceSerialNumber"},
+        {id: "SensorType",  title: "SensorType"},
+        {id: "Unit",  title: "Unit"},
+        {id: "Status", title: "Status"},
+        {id: "Date", title: "Date"},
+        {id: "Value", title: "Value"}
+      ]
+    });
+    
+    let rawData = await this.datumService.getDataByDate( startDate, endDate)
+ 
+
+    try{
+    csvWriter
+    .writeRecords(rawData)
+    .then(()=> console.log('The CSV file was written successfully'));
+
+    const file = createReadStream(join(process.cwd(), fileName));
+
+    return new StreamableFile(file);
+    }
+    catch(e){
+      console.log(e)
+    }
+
+    return null
+
+  }
+
   @Get()
   findAll(): Promise<Datum[]> {
     return this.datumService.findAll()
@@ -91,5 +147,6 @@ export class DatumController {
   deleteUser(@Param() params) {
     return this.datumService.delete(params.Id);
   }
-}
 
+
+}

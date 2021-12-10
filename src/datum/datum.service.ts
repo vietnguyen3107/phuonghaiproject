@@ -241,7 +241,7 @@ export class DatumService {
 
     const rawData = await entityManager.query(sql)
 
-   var newData = { name: "root", children: [] },
+    var newData = { name: "root", children: [] },
       levels = ["DeviceSerialNumber", "SensorType"];
 
     // For each data row, loop through the expected levels traversing the output tree
@@ -270,13 +270,93 @@ export class DatumService {
     // console.log(newData)
     let newnewData = newData.children[0].children
     let returnjson = []
-    
-    for(let i=0; i<newnewData.length; i++){
-      returnjson.push({"sensorType": newnewData[i].name, "data": newnewData[i].children})
+
+    for (let i = 0; i < newnewData.length; i++) {
+      returnjson.push({ "sensorType": newnewData[i].name, "data": newnewData[i].children })
     }
 
     return returnjson
 
   }
-};
+
+  async getStatisticDataBySensor(deviceSerialNumber: string, startDate: string, endDate: string): Promise<any> {
+
+    const entityManager = getManager();
+    const stDate = startDate + "T00:00:00"
+    const enDate = endDate + "T23:59:00"
+
+    let sql = `select  
+    Max(SensorType) as SensorType, Max(DeviceSerialNumber) as DeviceSerialNumber,
+    AVG(Value) as Average, MIN(Value) as Minimum, MAX(Value) as Maximum
+    from datum 
+    where DeviceSerialNumber='${deviceSerialNumber}' and ReceivedDate between '${stDate}' and '${enDate}' 
+   group by  SensorType, DeviceSerialNumber 
+   order by  SensorType, DeviceSerialNumber`
+
+
+    const rawData = await entityManager.query(sql)
+
+    var newData = { name: "root", children: [] },
+      levels = ["DeviceSerialNumber", "SensorType"];
+
+    // For each data row, loop through the expected levels traversing the output tree
+    rawData.forEach(function (d) {
+      // Keep this as a reference to the current level
+      var depthCursor = newData.children;
+      // Go down one level at a time
+      levels.forEach(function (property, depth) {
+
+        // Look to see if a branch has already been created
+        var index;
+        depthCursor.forEach(function (child, i) {
+          if (d[property] == child.name) index = i;
+        });
+        // Add a branch if it isn't there
+        if (isNaN(index)) {
+          depthCursor.push({ name: d[property], children: [] });
+          index = depthCursor.length - 1;
+        }
+        // Now reference the new child array as we go deeper into the tree
+        depthCursor = depthCursor[index].children;
+        // This is a leaf, so add the last element to the specified branch
+        if (depth === levels.length - 1) depthCursor.push({ AVG: d.Average, MIN: d.Minimum, MAX: d.Maximum });
+      });
+    });
+
+    let newnewData = newData.children[0].children
+    let newObj = {}
+    
+    for (let i = 0; i < newnewData.length; i++) {
+      let minObj ={}
+      minObj["Min"] = newnewData[i].children[0].MIN
+      let maxObj ={}
+      maxObj["Max"] = newnewData[i].children[0].MAX
+      let avgObj ={}
+      avgObj["Avg"] = newnewData[i].children[0].AVG
+      
+      newObj[newnewData[i].name] = Object.assign({}, minObj, maxObj,avgObj)
+    }
+
+    // console.log(newObj)
+
+     return newObj 
+  
+}
+async getDataByDate( startDate: string, endDate: string): Promise<Datum[]> {
+
+  const entityManager = getManager();
+  const stDate = startDate + "T00:00:00"
+  const enDate = endDate + "T23:59:00"
+  let sql =`select DeviceSerialNumber, SensorType, Unit, Status,
+  DATE_FORMAT(convert_tz(ReceivedDate, '+0:00', '+0:00'), '%Y-%m-%dT%k:%i') as Date,
+  Value
+  from datum
+  where ReceivedDate between '${stDate}' and '${enDate}' `
+
+  const rawData = await entityManager.query(sql)
+  return rawData
+
+}
+}
+
 
