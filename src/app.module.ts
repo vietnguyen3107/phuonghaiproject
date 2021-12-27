@@ -33,7 +33,7 @@ import { UserdeviceModule } from './userdevice/userdevice.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
 
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     }),
     LabModule, SensorModule, DeviceModule, DatumModule, UserModule, UserdeviceModule,
 

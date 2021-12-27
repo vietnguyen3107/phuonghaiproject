@@ -6,7 +6,8 @@ import { UpdateResult, DeleteResult, getManager } from 'typeorm';
 import { LargeNumberLike } from 'crypto';
 import { Lab } from 'src/lab/lab.entity';
 import { LabService } from 'src/lab/lab.service';
-import moment from 'moment';
+
+import * as moment from "moment";
 
 
 
@@ -301,8 +302,11 @@ export class DatumService {
    group by  SensorType, DeviceSerialNumber 
    order by  SensorType, DeviceSerialNumber`
 
+  //  console.log(sql)
 
     const rawData = await entityManager.query(sql)
+
+    if (rawData.length === 0 || rawData === null) return null
 
     var newData = { name: "root", children: [] },
       levels = ["DeviceSerialNumber", "SensorType"];

@@ -60,7 +60,11 @@ export class DatumController {
 
   @Get('/StatisticDataBySensor?')
   async filter8( @Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<any> {
-    return this.datumService.getStatisticDataBySensor( deviceSerialNumber,startDate, endDate)
+    const data = await this.datumService.getStatisticDataBySensor( deviceSerialNumber,startDate, endDate)
+    if (data===null) {
+      return `{"Error": "No Data"}`
+    }
+    else return data
   }
 
   @Get('/DownloadData1')
