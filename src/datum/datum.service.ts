@@ -6,6 +6,7 @@ import { UpdateResult, DeleteResult, getManager } from 'typeorm';
 import { LargeNumberLike } from 'crypto';
 import { Lab } from 'src/lab/lab.entity';
 import { LabService } from 'src/lab/lab.service';
+import moment from 'moment';
 
 
 
@@ -282,8 +283,15 @@ export class DatumService {
   async getStatisticDataBySensor(deviceSerialNumber: string, startDate: string, endDate: string): Promise<any> {
 
     const entityManager = getManager();
-    const stDate = startDate + "T00:00:00"
-    const enDate = endDate + "T23:59:00"
+    //const stDate = startDate + "T16:59:00"
+    const mStartDate = moment(startDate, 'YYYY-MM-DD')
+    mStartDate.subtract(1, 'days').toDate()
+    const newStartDate = mStartDate.format('YYYY-MM-DD')
+
+    const stDate = newStartDate + "T17:00:00"
+
+    const enDate = endDate + "T16:59:00"
+
 
     let sql = `select  
     Max(SensorType) as SensorType, Max(DeviceSerialNumber) as DeviceSerialNumber,
