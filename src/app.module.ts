@@ -10,6 +10,7 @@ import { getConnectionOptions, Repository } from 'typeorm';
 import { UserModule } from './user/user.module';
 import { BasicAuthMiddleware } from './user/basic.auth.middleware';
 import { UserService } from './user/user.service';
+import { UserdeviceModule } from './userdevice/userdevice.module';
 
 
 @Module({
@@ -32,9 +33,9 @@ import { UserService } from './user/user.service';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
 
       autoLoadEntities: true,
-      synchronize: false,
+      synchronize: true,
     }),
-    LabModule, SensorModule, DeviceModule, DatumModule, UserModule,
+    LabModule, SensorModule, DeviceModule, DatumModule, UserModule, UserdeviceModule,
 
   ],
   controllers: [AppController],
