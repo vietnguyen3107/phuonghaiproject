@@ -69,13 +69,14 @@ export class DatumService {
       sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
     where SensorType='${sensorType}' and DeviceSerialNumber='${deviceSerialNumber}' 
     order by ReceivedDate DESC limit 0,12`
+    console.log(sql)
     }
     else {
       sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
     where DeviceSerialNumber='${deviceSerialNumber}' 
     order by ReceivedDate DESC limit 0,12`
     }
-
+    console.log(sql)
     const rawData = entityManager.query(sql)
 
     return rawData
@@ -91,15 +92,17 @@ export class DatumService {
 
     let sql = ''
     if (sensorType !== 'All') {
-      sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
+      sql = `select DeviceSerialNumber, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate, Value, SensorType, Unit, Status from datum 
     where SensorType='${sensorType}' and DeviceSerialNumber='${deviceSerialNumber}' 
     order by ReceivedDate DESC limit 0,288`
+  // console.log(sql)
     }
     else {
       sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
     where DeviceSerialNumber='${deviceSerialNumber}' 
     order by ReceivedDate DESC limit 0,288`
-    }
+    
+  }
 
     const rawData = entityManager.query(sql)
 
@@ -357,14 +360,19 @@ export class DatumService {
 async getDataByDate( startDate: string, endDate: string): Promise<Datum[]> {
 
   const entityManager = getManager();
-  const stDate = startDate + "T00:00:00"
-  const enDate = endDate + "T23:59:00"
-  let sql =`select DeviceSerialNumber, SensorType, Unit, Status,
-  DATE_FORMAT(convert_tz(ReceivedDate, '+0:00', '+0:00'), '%Y-%m-%dT%k:%i') as Date,
-  Value
-  from datum
-  where ReceivedDate between '${stDate}' and '${enDate}' `
+  const mStartDate = moment(startDate, 'YYYY-MM-DD')
+    mStartDate.subtract(1, 'days').toDate()
+    const newStartDate = mStartDate.format('YYYY-MM-DD')
 
+    const stDate = newStartDate + "T17:00:00"
+
+    const enDate = endDate + "T16:59:00"
+ 
+  let sql =`select DATE_FORMAT(convert_tz(ReceivedDate, '+0:00', '+0:00'), '%Y-%m-%dT%k:%i') as Date, DeviceSerialNumber, SensorType, Value, Unit, Status
+  from datum
+  where ReceivedDate between '${stDate}' and '${enDate}' 
+  order by DeviceSerialNumber, SensorType, Date`
+  // console.log(sql)
   const rawData = await entityManager.query(sql)
   return rawData
 
