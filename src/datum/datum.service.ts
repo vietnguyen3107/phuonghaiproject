@@ -357,7 +357,7 @@ export class DatumService {
      return newObj 
   
 }
-async getDataByDate( startDate: string, endDate: string): Promise<Datum[]> {
+async getDataByDate( deviceSerialNumber: string, startDate: string, endDate: string): Promise<Datum[]> {
 
   const entityManager = getManager();
   const mStartDate = moment(startDate, 'YYYY-MM-DD')
@@ -370,7 +370,7 @@ async getDataByDate( startDate: string, endDate: string): Promise<Datum[]> {
  
   let sql =`select DATE_FORMAT(convert_tz(ReceivedDate, '+0:00', '+0:00'), '%Y-%m-%dT%k:%i') as Date, DeviceSerialNumber, SensorType, Value, Unit, Status
   from datum
-  where ReceivedDate between '${stDate}' and '${enDate}' 
+  where DeviceSerialNumber='${deviceSerialNumber}' and ReceivedDate between '${stDate}' and '${enDate}' 
   order by DeviceSerialNumber, SensorType, Date`
   // console.log(sql)
   const rawData = await entityManager.query(sql)
