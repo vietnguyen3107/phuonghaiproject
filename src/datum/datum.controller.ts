@@ -85,13 +85,13 @@ export class DatumController {
     const csvWriter = createCsvWriter({
       path: fileName,
       header: [
-       
+        {id: "Date", title: "Date"},
         {id: "DeviceSerialNumber", title: "DeviceSerialNumber"},
         {id: "SensorType",  title: "SensorType"},
+        {id: "Value", title: "Value"},
         {id: "Unit",  title: "Unit"},
-        {id: "Status", title: "Status"},
-        {id: "Date", title: "Date"},
-        {id: "Value", title: "Value"}
+        {id: "Status", title: "Status"}
+       
       ]
     });
     
