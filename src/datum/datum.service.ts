@@ -360,13 +360,17 @@ export class DatumService {
 async getDataByDate( deviceSerialNumber: string, startDate: string, endDate: string): Promise<Datum[]> {
 
   const entityManager = getManager();
-  const mStartDate = moment(startDate, 'YYYY-MM-DD')
-    mStartDate.subtract(1, 'days').toDate()
-    const newStartDate = mStartDate.format('YYYY-MM-DD')
 
-    const stDate = newStartDate + "T17:00:00"
+  // const mStartDate = moment(startDate, 'YYYY-MM-DD')
+  //   mStartDate.subtract(1, 'days').toDate()
+  //   const newStartDate = mStartDate.format('YYYY-MM-DD')
 
-    const enDate = endDate + "T16:59:00"
+  //   const stDate = newStartDate + "T17:00:00"
+
+  //   const enDate = endDate + "T16:59:00"
+
+  const stDate = startDate + "T00:00:00"
+  const enDate = endDate + "T23:59:00"
  
   let sql =`select DATE_FORMAT(convert_tz(ReceivedDate, '+0:00', '+0:00'), '%Y-%m-%dT%k:%i') as Date, DeviceSerialNumber, SensorType, Value, Unit, Status
   from datum
