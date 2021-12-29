@@ -23,8 +23,10 @@ import { UserdeviceModule } from './userdevice/userdevice.module';
     //     }),
     //   }),
 
+    
     TypeOrmModule.forRoot({
       type: 'mysql',
+      //host: '52.74.203.70',
       host: 'localhost',
       port: 3309,
       username: 'phuonghai',
