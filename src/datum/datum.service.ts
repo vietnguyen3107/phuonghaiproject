@@ -30,23 +30,28 @@ export class DatumService {
   }
 
 
-  async create(datum: Datum): Promise<Datum> {
+  async create(datum: Datum): Promise<any> {
 
     const entityManager = getManager();
     let sql = `select * from datum 
     where SensorType='${datum.SensorType}' and DeviceSerialNumber='${datum.DeviceSerialNumber}' 
     and ReceivedDate='${datum.ReceivedDate}'`
 
-    console.log(sql)
+    //console.log(sql)
     let rawData = await entityManager.query(sql)
 
-    if (rawData !== null) {
-      await entityManager.query(`delete from datum 
-      where SensorType='${datum.SensorType}' and DeviceSerialNumber='${datum.DeviceSerialNumber}' 
-      and ReceivedDate='${datum.ReceivedDate}'`)
-    }
+    // if (rawData !== null) {
+    //   await entityManager.query(`delete from datum 
+    //   where SensorType='${datum.SensorType}' and DeviceSerialNumber='${datum.DeviceSerialNumber}' 
+    //   and ReceivedDate='${datum.ReceivedDate}'`)
+    // }
 
-    return await this.datumRepo.save(datum)
+    if (rawData === null) {
+      return await this.datumRepo.save(datum)
+    }
+    else{
+      return {"Error": "Duplicate"}
+    }
   }
 
   async update(task: Datum): Promise<UpdateResult> {

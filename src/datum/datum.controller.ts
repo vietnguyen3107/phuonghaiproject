@@ -134,7 +134,7 @@ export class DatumController {
   @Post('/Batch')
   createBatch(@Body() datums: Datum[]) {
 
-    console.log(datums)
+    //console.log(datums)
     datums.forEach(d => {
       this.datumService.create(d);
     });
