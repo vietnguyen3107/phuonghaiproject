@@ -46,7 +46,8 @@ export class DatumService {
     //   and ReceivedDate='${datum.ReceivedDate}'`)
     // }
 
-    if (rawData === null) {
+
+    if (rawData.length === 0) {
       return await this.datumRepo.save(datum)
     }
     else{

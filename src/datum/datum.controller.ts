@@ -132,13 +132,24 @@ export class DatumController {
   }
 
   @Post('/Batch')
-  createBatch(@Body() datums: Datum[]) {
+  async createBatch(@Body() datums: Datum[]) {
 
     //console.log(datums)
-    datums.forEach(d => {
-      this.datumService.create(d);
-    });
-    return datums;
+    const successfulDatums = []
+
+    for await (const d of datums) {
+      try{
+        let result =  await this.datumService.create(d);
+        if (result.hasOwnProperty('ReceivedDate')){
+          successfulDatums.push(d)
+        }      
+      }
+      catch(error){
+        console.error(error)
+      }
+    }
+
+    return successfulDatums;
   }
 
 
