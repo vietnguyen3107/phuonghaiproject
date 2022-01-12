@@ -170,7 +170,7 @@ export class DatumService {
     from datum 
     where ReceivedDate between '${stDate}' and '${enDate}' 
    group by DateOnly, SensorType, DeviceSerialNumber 
-   order by  DeviceSerialNumber, SensorType`
+   order by  DeviceSerialNumber, SensorType, DateOnly`
     // console.log(sql)
     const rawData = await entityManager.query(sql)
     // console.log(rawData)
@@ -248,12 +248,13 @@ export class DatumService {
     from datum 
     where DeviceSerialNumber='${deviceSerialNumber}' and ReceivedDate between '${stDate}' and '${enDate}' 
    group by DateOnly, SensorType, DeviceSerialNumber 
-   order by  DeviceSerialNumber, SensorType`
+   order by  DeviceSerialNumber, SensorType, DateOnly`
 
     const rawData = await entityManager.query(sql)
 
-    var newData = { name: "root", children: [] },
-      levels = ["DeviceSerialNumber", "SensorType"];
+    if (rawData.length === 0 || rawData === null) return null
+
+    var newData = { name: "root", children: [] }, levels = ["DeviceSerialNumber", "SensorType"];
 
     // For each data row, loop through the expected levels traversing the output tree
     rawData.forEach(function (d) {

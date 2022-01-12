@@ -44,8 +44,12 @@ export class DatumController {
 
 
   @Get('/StatisticData?')
-  filter4( @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<any> {
-    return this.datumService.getStatisticData( startDate, endDate)
+  async filter4( @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<any> {
+    const data = await this.datumService.getStatisticData( startDate, endDate)
+    if (data === null) 
+      return []
+    else
+      return data
   }
 
   @Get('/StatisticDataByDevice?')
@@ -62,7 +66,7 @@ export class DatumController {
   async filter8( @Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<any> {
     const data = await this.datumService.getStatisticDataBySensor( deviceSerialNumber,startDate, endDate)
     if (data===null) {
-      return `{"Error": "No Data"}`
+      return []
     }
     else return data
   }

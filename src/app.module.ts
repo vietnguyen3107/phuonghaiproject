@@ -26,8 +26,8 @@ import { UserdeviceModule } from './userdevice/userdevice.module';
     
     TypeOrmModule.forRoot({
       type: 'mysql',
-      //host: '52.74.203.70',
-      host: 'localhost',
+      host: '52.74.203.70',
+      //host: 'localhost',
       port: 3309,
       username: 'phuonghai',
       password: 'phuonghai',
@@ -56,3 +56,5 @@ export class AppModule implements NestModule {
     .forRoutes('/');
   }
 }
+
+// export class AppModule { }
