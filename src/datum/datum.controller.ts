@@ -62,6 +62,11 @@ export class DatumController {
     return this.datumService.getLastestDataByDevice(deviceSerialNumber)
   }
 
+  @Get('/LastestDataByAllDevices?')
+  filter5a(): Promise<any> {
+    return this.datumService.getLastestDataByAllDevices2()
+  }
+
   @Get('/StatisticDataBySensor?')
   async filter8( @Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<any> {
     const data = await this.datumService.getStatisticDataBySensor( deviceSerialNumber,startDate, endDate)
