@@ -128,7 +128,10 @@ export class DatumService {
       sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
     where SensorType='${sensorType}' and DeviceSerialNumber='${deviceSerialNumber}' 
     order by ReceivedDate DESC limit 0,2016`
+    console.log(sql);
     }
+  
+    
     else {
       sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate from datum 
     where DeviceSerialNumber='${deviceSerialNumber}' 
@@ -226,6 +229,9 @@ export class DatumService {
         group by SensorType, DeviceSerialNumber
     ) tm on t.SensorType = tm.SensorType and t.DeviceSerialNumber=tm.DeviceSerialNumber 
     and t.ReceivedDate = tm.MaxDate`
+
+    console.log(sql);
+    
 
     if (deviceSerialNumber && deviceSerialNumber !== '') {
       sql += ` and t.DeviceSerialNumber = '${deviceSerialNumber}'`
@@ -390,6 +396,8 @@ async getDataByDate( deviceSerialNumber: string, startDate: string, endDate: str
   return rawData
 
 }
+
+
 }
 
 
