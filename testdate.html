@@ -1,0 +1,20 @@
+<script>
+
+startDate = '2021-12-27'
+endDate = '2021-12-27'
+
+const stDate = startDate + "T7:00:00"  
+const newEndDate = Date.parse(endDate)
+
+console.log(newEndDate.toISOString())
+
+var date = new Date();
+
+// add a day
+date.setDate(newEndDate.getDate() + 1);
+const enDate = date + "T16:59:00"
+
+
+console.log(stDate)
+console.log(enDate)
+</script>

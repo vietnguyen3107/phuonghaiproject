@@ -44,8 +44,12 @@ export class DatumController {
 
 
   @Get('/StatisticData?')
-  filter4( @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<any> {
-    return this.datumService.getStatisticData( startDate, endDate)
+  async filter4( @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<any> {
+    const data = await this.datumService.getStatisticData( startDate, endDate)
+    if (data === null) 
+      return []
+    else
+      return data
   }
 
   @Get('/StatisticDataByDevice?')
@@ -58,9 +62,18 @@ export class DatumController {
     return this.datumService.getLastestDataByDevice(deviceSerialNumber)
   }
 
+  @Get('/LastestDataByAllDevices?')
+  filter5a(): Promise<any> {
+    return this.datumService.getLastestDataByAllDevices2()
+  }
+
   @Get('/StatisticDataBySensor?')
   async filter8( @Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<any> {
-    return this.datumService.getStatisticDataBySensor( deviceSerialNumber,startDate, endDate)
+    const data = await this.datumService.getStatisticDataBySensor( deviceSerialNumber,startDate, endDate)
+    if (data===null) {
+      return []
+    }
+    else return data
   }
 
   @Get('/DownloadData1')
@@ -72,7 +85,7 @@ export class DatumController {
   }
 
   @Get('/DataByDate?')
-  async filter9(@Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<StreamableFile> {
+  async filter9(@Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<StreamableFile> {
 
     const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
@@ -81,17 +94,17 @@ export class DatumController {
     const csvWriter = createCsvWriter({
       path: fileName,
       header: [
-       
+        {id: "Date", title: "Date"},
         {id: "DeviceSerialNumber", title: "DeviceSerialNumber"},
         {id: "SensorType",  title: "SensorType"},
+        {id: "Value", title: "Value"},
         {id: "Unit",  title: "Unit"},
-        {id: "Status", title: "Status"},
-        {id: "Date", title: "Date"},
-        {id: "Value", title: "Value"}
+        {id: "Status", title: "Status"}
+       
       ]
     });
     
-    let rawData = await this.datumService.getDataByDate( startDate, endDate)
+    let rawData = await this.datumService.getDataByDate( deviceSerialNumber,startDate, endDate)
  
 
     try{
@@ -128,13 +141,24 @@ export class DatumController {
   }
 
   @Post('/Batch')
-  createBatch(@Body() datums: Datum[]) {
+  async createBatch(@Body() datums: Datum[]) {
 
-    console.log(datums)
-    datums.forEach(d => {
-      this.datumService.create(d);
-    });
-    return datums;
+    //console.log(datums)
+    const successfulDatums = []
+
+    for await (const d of datums) {
+      try{
+        let result =  await this.datumService.create(d);
+        if (result.hasOwnProperty('ReceivedDate')){
+          successfulDatums.push(d)
+        }      
+      }
+      catch(error){
+        console.error(error)
+      }
+    }
+
+    return successfulDatums;
   }
 
 

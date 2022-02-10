@@ -11,15 +11,15 @@ export class Datum{
 
   @Column("float") 
   Value: number;
-
-  @Column({ length: 100 })
-  Status: string;
   
   @Column({ length: 100 })
   SensorType: string;
 
   @Column({ length: 100 })
   Unit: string;
+
+  @Column({ length: 100 })
+  Status: string;
 
   @Column({ length: 100 })
   DeviceSerialNumber: string;

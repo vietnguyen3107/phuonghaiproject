@@ -10,6 +10,7 @@ import { getConnectionOptions, Repository } from 'typeorm';
 import { UserModule } from './user/user.module';
 import { BasicAuthMiddleware } from './user/basic.auth.middleware';
 import { UserService } from './user/user.service';
+import { UserdeviceModule } from './userdevice/userdevice.module';
 
 
 @Module({
@@ -22,10 +23,15 @@ import { UserService } from './user/user.service';
     //     }),
     //   }),
 
+    
     TypeOrmModule.forRoot({
       type: 'mysql',
+      //host: '52.74.203.70',
+
+      //new db
+      //host: '52.74.63.36',
       host: 'localhost',
-      port: 3309,
+      port: 3306,
       username: 'phuonghai',
       password: 'phuonghai',
       database: 'phuonghai',
@@ -34,7 +40,7 @@ import { UserService } from './user/user.service';
       autoLoadEntities: true,
       synchronize: false,
     }),
-    LabModule, SensorModule, DeviceModule, DatumModule, UserModule,
+    LabModule, SensorModule, DeviceModule, DatumModule, UserModule, UserdeviceModule,
 
   ],
   controllers: [AppController],
@@ -53,3 +59,5 @@ export class AppModule implements NestModule {
     .forRoutes('/');
   }
 }
+
+// export class AppModule { }
