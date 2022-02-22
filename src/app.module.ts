@@ -29,8 +29,8 @@ import { UserdeviceModule } from './userdevice/userdevice.module';
       //host: '52.74.203.70',
 
       //new db
-      //host: '52.74.63.36',
-      host: 'localhost',
+      host: '52.74.63.36',
+      //host: 'localhost',
       port: 3306,
       username: 'phuonghai',
       password: 'phuonghai',

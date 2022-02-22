@@ -1,16 +1,44 @@
+
 import { Controller, Get, Post, Patch, Delete, Body, Param, Query } from '@nestjs/common';
 import { UserDeviceService } from './userdevice.service';
 import { UserDevice } from './userdevice.entity';
+import { getManager } from 'typeorm';
+import { combineLatest } from 'rxjs/operators';
 
 
 
-@Controller('Userdevices')
+@Controller('UserDevices')
 export class UserdeviceController {
   constructor(private readonly userdeviceService: UserDeviceService) {}
 
   @Post()
   create(@Body() userDevice: UserDevice) {
     return this.userdeviceService.create(userDevice);
+  }
+
+  @Post('/Assign')
+  async create2(@Body() userDevices: UserDevice[]) {
+    try{
+
+      let userDevice0 = userDevices[0]
+      console.log(userDevices)
+      const entityManager = getManager();
+      let sql = `delete from userdevice where User_Id=${userDevice0.User.Id}`
+      //console.log(sql)
+      let rawData = await entityManager.query(sql)
+      console.log(JSON.parse(JSON.stringify(rawData)))
+
+      for (const ud of userDevices) {
+        this.userdeviceService.create(ud);
+      }
+    
+      return {"Status": "OK"}
+
+    }
+    catch(e){
+      return {"Error": e.message}
+    }
+
   }
  
 
@@ -35,3 +63,4 @@ export class UserdeviceController {
     return this.userdeviceService.remove(params.id);
   }
 }
+
