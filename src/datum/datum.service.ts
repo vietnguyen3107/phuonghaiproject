@@ -8,6 +8,7 @@ import { Lab } from 'src/lab/lab.entity';
 import { LabService } from 'src/lab/lab.service';
 
 import * as moment from "moment";
+import { zhCN } from 'date-fns/locale';
 
 
 
@@ -240,7 +241,7 @@ export class DatumService {
 
 
 
-  async getLastestDataByAllDevices2(): Promise<any> {
+  async getLastestDataByAllDevices2(userId: number): Promise<any> {
 
     const entityManager = getManager();
 
@@ -251,7 +252,9 @@ export class DatumService {
         from datum
         group by SensorType, DeviceSerialNumber
     ) tm on t.SensorType = tm.SensorType and t.DeviceSerialNumber=tm.DeviceSerialNumber and t.ReceivedDate = tm.MaxDate
-    inner join device d on d.SerialNumber= t.DeviceSerialNumber`
+    inner join device d on d.SerialNumber= t.DeviceSerialNumber
+    where d.Id in (select Device_Id from userdevice where User_Id = ${userId})
+    `
 
     const rawData = await entityManager.query(sql)
 
@@ -282,6 +285,8 @@ export class DatumService {
         if (depth === levels.length - 1) depthCursor.push({ SensorType: d.SensorType, Value: d.Value });
       });
     });
+
+    //console.log(newData)
    
     return newData
 

@@ -1,4 +1,4 @@
-import { Controller, StreamableFile, Get, Post, Put, Delete, Body, Param, Query, Res } from '@nestjs/common';
+import { Controller, StreamableFile, Get, Post, Put, Delete, Body, Param, Query, Res, Req } from '@nestjs/common';
 import { DatumService } from './datum.service'
 import { Datum } from './datum.entity'
 import { Lab } from 'src/lab/lab.entity';
@@ -6,6 +6,10 @@ import { Between } from 'typeorm';
 
 import { createReadStream } from 'fs';
 import { join } from 'path';
+
+import { Request } from 'express';
+import { RequestModel } from 'src/user/basic.auth.middleware';
+
 
 @Controller('Datums')
 export class DatumController {
@@ -63,8 +67,8 @@ export class DatumController {
   }
 
   @Get('/LastestDataByAllDevices?')
-  filter5a(): Promise<any> {
-    return this.datumService.getLastestDataByAllDevices2()
+  filter5a(@Req() req: RequestModel): Promise<any> {
+    return this.datumService.getLastestDataByAllDevices2(req.user.Id)
   }
 
   @Get('/StatisticDataBySensor?')
