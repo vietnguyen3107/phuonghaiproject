@@ -12,7 +12,8 @@ export class UserDevice{
   @Column('text')
   DeviceSerialNumber: string
 
-
+  @Column('int')
+  DeviceId: number
 
   @ManyToOne(type => User, User => User.Id,  {eager: false})
   @JoinColumn({name: "User_Id", referencedColumnName: "Id"})   
