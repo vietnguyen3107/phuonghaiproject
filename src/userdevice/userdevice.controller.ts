@@ -21,12 +21,12 @@ export class UserdeviceController {
     try{
 
       let userDevice0 = userDevices[0]
-      console.log(userDevices)
+      //console.log(userDevices)
       const entityManager = getManager();
       let sql = `delete from userdevice where User_Id=${userDevice0.User.Id}`
       //console.log(sql)
       let rawData = await entityManager.query(sql)
-      console.log(JSON.parse(JSON.stringify(rawData)))
+      //console.log(JSON.parse(JSON.stringify(rawData)))
 
       for (const ud of userDevices) {
         this.userdeviceService.create(ud);

@@ -41,6 +41,15 @@ export class BasicAuthMiddleware implements NestMiddleware {
         req.user = user
 
         var pathname = url.parse(req.url).pathname
+
+        if (pathname==='/Users'){
+
+            console.log(user.Email)
+            if(user.Email!=="admin"){
+                return res.status(401).json({ message: 'Invalid Authentication Credentials - Only admin can do this' });
+            }
+        }
+
         if (pathname.indexOf('SerialNumber')>=0){
         try {
             var query = url.parse(req.url).query
