@@ -11,6 +11,7 @@ import { UserModule } from './user/user.module';
 import { BasicAuthMiddleware } from './user/basic.auth.middleware';
 import { UserService } from './user/user.service';
 import { UserdeviceModule } from './userdevice/userdevice.module';
+import { DevicegroupModule } from './devicegroup/devicegroup.module';
 
 
 @Module({
@@ -40,7 +41,7 @@ import { UserdeviceModule } from './userdevice/userdevice.module';
       autoLoadEntities: true,
       synchronize: false,
     }),
-    LabModule, SensorModule, DeviceModule, DatumModule, UserModule, UserdeviceModule,
+    LabModule, SensorModule, DeviceModule, DatumModule, UserModule, UserdeviceModule, DevicegroupModule,
 
   ],
   controllers: [AppController],
