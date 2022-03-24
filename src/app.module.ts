@@ -30,9 +30,9 @@ import { DevicegroupModule } from './devicegroup/devicegroup.module';
       //host: '52.74.203.70',
 
       //new db
-      host: '52.74.63.36',
-      //host: 'localhost',
-      port: 3306,
+      // host: '52.74.63.36',
+      host: 'localhost',
+      port: 3309,
       username: 'phuonghai',
       password: 'phuonghai',
       database: 'phuonghai',

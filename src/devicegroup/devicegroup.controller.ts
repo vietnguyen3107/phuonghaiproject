@@ -7,7 +7,6 @@ export class DevicegroupController {
     constructor(private readonly devicegroupService: DevicegroupService){}
     @Get()
     findAll(): Promise <Devicegroup[]>{
-        console.log("table is created");
         
         return this.devicegroupService.findAll()
     }

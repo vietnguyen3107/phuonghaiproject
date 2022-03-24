@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 export class Devicegroup {
     @PrimaryGeneratedColumn()
     Id: number;
-    @Column({length:500})
+    @Column('text')
     Name: string;
     @Column('text')
     Description: string

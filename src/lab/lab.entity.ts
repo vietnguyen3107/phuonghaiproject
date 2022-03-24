@@ -26,7 +26,7 @@ export class Lab{
   @Column()
   IsActive: boolean;
 
-  @OneToMany(type => Device, Device => Device.Lab, {eager: true})
-  Devices: Device[];
+  // @OneToMany(type => Device, Device => Device.Devicegroup, {eager: true})
+  // Devices: Device[];
 
 }
