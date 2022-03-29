@@ -27,8 +27,12 @@ export class UserController {
   // }
 
   @Put()
-  update(@Body() lab: User) {
-    return this.userService.update(lab);
+  async update(@Body() user: User) {
+    //update user's password to hash
+    const hash = await bcrypt.hash(user.Password, 10);
+    user.Password = await hash
+
+    return this.userService.update(user);
   }
 
   @Delete(':Id')
@@ -46,9 +50,7 @@ export class UserController {
       user.Password = await hash
   
        return this.userService.create(user);
-    }
-
-     
+    }    
     else
       return {status: 400, message: "Email already exists"}
   }
