@@ -307,6 +307,8 @@ export class DatumService {
    group by DateOnly, SensorType, DeviceSerialNumber 
    order by  DeviceSerialNumber, SensorType, DateOnly`
 
+   //console.log(sql)
+
     const rawData = await entityManager.query(sql)
 
     if (rawData.length === 0 || rawData === null) return null

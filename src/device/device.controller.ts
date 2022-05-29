@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, Request, Req } from '@nestjs/common';
 import { DeviceService } from './device.service'
 import { Device } from './device.entity'
 import { Sensor } from 'src/sensor/sensor.entity';
+import { RequestModel } from 'src/user/basic.auth.middleware';
 
 
 @Controller('Devices')
@@ -16,9 +17,16 @@ export class DeviceController {
   }
 
   @Get()
-  findAll(): Promise<Device[]> {
+  findAll(@Req() request: RequestModel): Promise<Device[]> {
     return this.deviceService.findAll()
   }
+
+
+  @Get('/ByUser')
+  findDevicesByUser(@Req() request: RequestModel): Promise<Device[]> {
+    return this.deviceService.findDevicesByUser(request.user.Id)
+  }
+
 
   @Get(':Id')
   get(@Param() params) {

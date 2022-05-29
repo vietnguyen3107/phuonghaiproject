@@ -1,9 +1,9 @@
 
-import { Controller, Get, Post, Patch, Delete, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Query, Req } from '@nestjs/common';
 import { UserDeviceService } from './userdevice.service';
 import { UserDevice } from './userdevice.entity';
 import { getManager } from 'typeorm';
-import { combineLatest } from 'rxjs/operators';
+
 
 
 
@@ -52,9 +52,9 @@ export class UserdeviceController {
     return this.userdeviceService.findOne(params.Id);
   }
 
-  @Get('/UserByDevice?')
+  @Get('/UserDeviceByDevice')
   async filter( @Query('DeviceSerialNumber') deviceSerialNumber: string ): Promise<any> {
-    return this.userdeviceService.getAllUserByDevice(deviceSerialNumber)
+    return this.userdeviceService.getAllUserDevicesByDevice(deviceSerialNumber)
   }
 
 

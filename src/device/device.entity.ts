@@ -1,11 +1,12 @@
 import { Devicegroup } from 'src/devicegroup/devicegroup.entity';
 import { Lab } from 'src/lab/lab.entity';
 import { Sensor } from 'src/sensor/sensor.entity';
+import { UserDevice } from 'src/userdevice/userdevice.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 // import { Transform } from 'class-transformer';
 
 @Entity('device')
-export class Device{
+export class Device {
   @PrimaryGeneratedColumn()
   Id: number;
 
@@ -15,7 +16,7 @@ export class Device{
   @Column({ type: 'datetime' })
   DateSync: string;
 
-  @Column('text') 
+  @Column('text')
   Description: string;
 
   @Column('text')
@@ -36,13 +37,13 @@ export class Device{
   // @Column()
   // LabId: number;
 
-  @ManyToOne(type => Devicegroup, Devicegroup => Devicegroup.Id,  {eager: false})
-  @JoinColumn({name: "Devicegroup_Id", referencedColumnName: "Id"})   
-   // defining this is also optional because by default,
-   // the referenced foreign key is named as <column_name>_id or account_id
+  @ManyToOne(type => Devicegroup, Devicegroup => Devicegroup.Id, { eager: true })
+  @JoinColumn({ name: "Devicegroup_Id" })
+  // defining this is also optional because by default,
+  // the referenced foreign key is named as <column_name>_id or account_id
   Devicegroup: Devicegroup;
 
-  @OneToMany(type => Sensor, Sensor => Sensor.Device, {eager: true})
+  @OneToMany(type => Sensor, Sensor => Sensor.Device, { eager: false })
   Sensors: Sensor[];
 
   @Column('text')
@@ -50,4 +51,7 @@ export class Device{
 
   @Column()
   IsActive: boolean;
+
+  @OneToMany(() => UserDevice, userDevice => userDevice.Id)
+  userDevices: UserDevice[];
 }
