@@ -38,12 +38,12 @@ export class Device {
   // LabId: number;
 
   @ManyToOne(type => Devicegroup, Devicegroup => Devicegroup.Id, { eager: true })
-  @JoinColumn({ name: "Devicegroup_Id" })
+  @JoinColumn({ name: "Devicegroup_Id2" })
   // defining this is also optional because by default,
   // the referenced foreign key is named as <column_name>_id or account_id
   Devicegroup: Devicegroup;
 
-  @OneToMany(type => Sensor, Sensor => Sensor.Device, { eager: false })
+  @OneToMany(type => Sensor, Sensor => Sensor.Device, { eager: true })
   Sensors: Sensor[];
 
   @Column('text')
