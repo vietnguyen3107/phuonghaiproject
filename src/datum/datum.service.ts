@@ -220,21 +220,32 @@ export class DatumService {
     // where DeviceSerialNumber='${deviceSerialNumber}' 
     // order by ReceivedDate DESC limit 0,1`
 
-    let sql = `select t.SensorType, t.DeviceSerialNumber, t.ReceivedDate, t.Value, t.Status, t.Unit
-    from datum t
-    inner join (
-        select SensorType, DeviceSerialNumber, max(ReceivedDate) as MaxDate
-        from datum
-        group by SensorType, DeviceSerialNumber
-    ) tm on t.SensorType = tm.SensorType and t.DeviceSerialNumber=tm.DeviceSerialNumber 
-    and t.ReceivedDate = tm.MaxDate`
+    let sql = ''
 
     if (deviceSerialNumber && deviceSerialNumber !== '') {
-      sql += ` and t.DeviceSerialNumber = '${deviceSerialNumber}'`
+      sql = `select t.SensorType, t.DeviceSerialNumber, t.ReceivedDate, t.Value, t.Status, t.Unit
+      from datum t
+      inner join (
+          select SensorType, DeviceSerialNumber, max(ReceivedDate) as MaxDate
+          from datum
+          where DeviceSerialNumber = '${deviceSerialNumber}'
+          group by SensorType, DeviceSerialNumber
+      ) tm on t.SensorType = tm.SensorType and t.DeviceSerialNumber=tm.DeviceSerialNumber 
+      and t.ReceivedDate = tm.MaxDate
+      and t.DeviceSerialNumber = '${deviceSerialNumber}'`
+    }
+    else{
+      sql = `select t.SensorType, t.DeviceSerialNumber, t.ReceivedDate, t.Value, t.Status, t.Unit
+      from datum t
+      inner join (
+          select SensorType, DeviceSerialNumber, max(ReceivedDate) as MaxDate
+          from datum
+          group by SensorType, DeviceSerialNumber
+      ) tm on t.SensorType = tm.SensorType and t.DeviceSerialNumber=tm.DeviceSerialNumber 
+      and t.ReceivedDate = tm.MaxDate`
     }
 
     const rawData = entityManager.query(sql)
-
     return rawData
 
   }
