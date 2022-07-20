@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Device } from './device.entity' 
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, getManager } from 'typeorm';
 import { UpdateResult, DeleteResult } from  'typeorm';
+
 
 @Injectable()
 export class DeviceService {
@@ -13,6 +14,20 @@ export class DeviceService {
 
   async findAll (): Promise<Device[]> {
     return await this.deviceRepo.find();
+  }
+
+  async findDevicesByUser (userId: number): Promise<Device[]> {
+
+    const entityManager = getManager();
+
+    const sql = `select device.* from device 
+     inner join userdevice where device.Id=userdevice.Device_Id
+     and userdevice.User_Id=${userId}`
+
+    const rawData = entityManager.query(sql)
+
+    return rawData
+    
   }
 
   async findOne (Id: number): Promise<Device> {

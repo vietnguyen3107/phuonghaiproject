@@ -3,14 +3,18 @@ import { UserDevice } from './userdevice.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getManager, Repository } from 'typeorm';
 
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
+
+
 @Injectable()
 export class UserDeviceService {
   constructor(
     @InjectRepository(UserDevice)
     private readonly userDeviceRepo: Repository<UserDevice>,
-  ) {}
+  ) { }
 
-  async findAll (): Promise<UserDevice[]> {
+  async findAll(): Promise<UserDevice[]> {
     return await this.userDeviceRepo.find();
   }
 
@@ -20,19 +24,20 @@ export class UserDeviceService {
   remove(id: number) {
     return `This action removes a #${id} userdevice`;
   }
-async create (userDevice: UserDevice): Promise<UserDevice>{
-  return await this.userDeviceRepo.save(userDevice)
-}
+  
+  async create(userDevice: UserDevice): Promise<UserDevice> {
+    return await this.userDeviceRepo.save(userDevice)
+  }
 
-  async getAllUserByDevice(deviceSerialNumber: string): Promise<UserDevice[]> {
+  async getAllUserDevicesByDevice(deviceSerialNumber: string): Promise<UserDevice[]> {
 
     const entityManager = getManager();
 
     let sql = ''
     if (deviceSerialNumber !== 'All') {
-      sql = `select * from user 
+      sql = `select * from userdevice 
     where DeviceSerialNumber='${deviceSerialNumber}' 
-    group by UserDevice `
+      `
     }
 
     const rawData = entityManager.query(sql)

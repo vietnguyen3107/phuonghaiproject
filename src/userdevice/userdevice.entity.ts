@@ -15,12 +15,15 @@ export class UserDevice{
   @Column('int')
   DeviceId: number
 
-  @ManyToOne(type => User, User => User.Id,  {eager: false})
-  @JoinColumn({name: "User_Id", referencedColumnName: "Id"})   
+  @ManyToOne(type => User, user => user.userDevices,  {eager: false})
+  @JoinColumn({name: "User_Id"})   
   User: User;
 
-  @ManyToOne(type => Device, Device => Device.Id,  {eager: false})
-  @JoinColumn({name: "Device_Id", referencedColumnName: "Id"})   
+  // @ManyToOne(() => User, user => user.photos)
+  // user: User;
+
+  @ManyToOne(type => Device, device => device.userDevices,  {eager: false})
+  @JoinColumn({name: "Device_Id"})  
   Device: Device;
 
 

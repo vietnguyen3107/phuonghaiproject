@@ -1,3 +1,4 @@
+import { truncate } from 'fs';
 import { UserDevice } from 'src/userdevice/userdevice.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 // import { Transform } from 'class-transformer';
@@ -15,4 +16,7 @@ export class User{
 
   @OneToMany(type => UserDevice, userDevice => userDevice.User, {eager: true})
   userDevices: UserDevice[] 
+
+  // @OneToMany(() => Photo, photo => photo.user)
+  //   photos: Photo[];
 }

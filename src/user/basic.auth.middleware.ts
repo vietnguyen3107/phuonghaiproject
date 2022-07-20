@@ -42,7 +42,7 @@ export class BasicAuthMiddleware implements NestMiddleware {
 
         var pathname = url.parse(req.url).pathname
 
-        if (pathname==='/Users'){
+        if (pathname==='/Users' || pathname==='/Devices' || pathname=='/DeviceGroups'){
 
             console.log(user.Email)
             if(user.Email!=="admin"){
