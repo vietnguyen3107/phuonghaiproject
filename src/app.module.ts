@@ -12,6 +12,8 @@ import { BasicAuthMiddleware } from './user/basic.auth.middleware';
 import { UserService } from './user/user.service';
 import { UserdeviceModule } from './userdevice/userdevice.module';
 import { DevicegroupModule } from './devicegroup/devicegroup.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 
 @Module({
@@ -24,6 +26,9 @@ import { DevicegroupModule } from './devicegroup/devicegroup.module';
     //     }),
     //   }),
 
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'frontend'),
+    }),
     
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -56,6 +61,7 @@ export class AppModule implements NestModule {
     consumer.apply(BasicAuthMiddleware)
     .exclude(
       'Users/Auth/(.*)',
+      'client/(.*)',
     )
     .forRoutes('/');
   }
