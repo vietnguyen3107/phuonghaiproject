@@ -44,26 +44,33 @@
     "txtModelDevice": "Model",
     "txtTypeDevice": "Loại",
 
-    "searchHint": "Tìm theo số sê-ri",
+    "searchHint": "Nhập tên hoặc số seri",
     "language": "Ngôn ngữ",
     "tapLanguage": "Nhấn để chọn ngôn ngữ",
     "logOut": "Đăng xuất",
 
-    "ok": "XÁC NHẬN",
-    "cancel": "HUỶ",
+    "txtRefresh": "Làm mới dữ liệu...",
+
+    "ok": "Xác nhận",
+    "cancel": "Hủy",
     "txtError": "Lỗi",
     "disconnected": "Mất kết nối tới thiết bị",
 
     "createGroup": "Tạo nhóm mới",
-    "addDevice": "Thêm thiết bị",
+    "addDevice": "Thêm/Xóa thiết bị",
     "renameGroup": "Đổi tên nhóm",
     "deleteGroup": "Xoá nhóm",
     "errorGroup": "Tên nhóm đã tồn tại",
     "hintCreateGroup": "Tên các nhóm phải khác nhau",
     "hintDeleteGroup": "Các thiết bị ở nhóm này sẽ về nhóm [General].",
     "areUSure": "Bạn chắc chắn?",
+
+    "txtHideAllDevices": "Ẩn nhóm tất cả thiết bị",
+    "txtShowAllDevices": "Hiện nhóm tất cả thiết bị",
+
     "deleteDevice": "Xoá thiết bị khỏi nhóm",
     "numberOfDevices": "Số lượng thiết bị tìm thấy",
+    
     "forgetPassword" : "Quên mật khẩu",
     "contactInfo": "Thông tin liên hệ",
     "pressAgainToExit": "Nhấn lần nữa để thoát",
@@ -86,6 +93,8 @@
     "Moderate": "Trung bình",
     "Poor": "Kém",
     "Unhealthy": "Không lành mạnh",
+    
+    "txtGroup": "Cài đặt nhóm",
 
     "txtVersion": "Phiên bản",
     "txtNothing": "Chưa có thiết bị",
@@ -93,7 +102,7 @@
     "txtColorIndicator": "Chỉ thị màu sắc",
     "txDataHistory": "Lịch sử dữ liệu",
     "txtTapToDown": "Nhấn để tải",
-    "txtTapAndHold":  "Nhấn giữ vào ô chỉ số đo để cài đặt cảnh báo",
+    "txtTapAndHold":  "Nhấn vào ô chỉ số đo để cài đặt cảnh báo",
 
     "txtTurnOffAlarm": "Cảnh báo tắt",
     "txtNormalDevice": "Thiết bị đang hoạt động",
@@ -116,8 +125,9 @@
     "txtAddDeviceDone": "Thêm thiết bị thành công",
     "txtErrAddDevice": "Lỗi, hãy kiểm tra lại",
 
+    "txtDone": "Xong",
 
-    
+    "txtAllDevices": "Tất cả thiết bị",
   
 
     "None": "None"

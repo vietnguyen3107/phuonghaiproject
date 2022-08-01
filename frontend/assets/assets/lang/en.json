@@ -20,6 +20,9 @@
     "fanTxtButton": "FAN",
     "lastUpdated": "Last updated",
 
+    "txtRefresh": "Refreshing...",
+
+
     "cantConnect": "Can't Connect",
 
     "txtDeviceControl": "Device control",
@@ -39,18 +42,18 @@
     "txtModelDevice": "Model",
     "txtTypeDevice": "Type",
 
-    "searchHint": "Find by serial number",
+    "searchHint": "Enter name or serial number",
     "language": "Language",
     "tapLanguage": "Tap to select language",
     "logOut": "Log Out",
 
-    "ok": "CONFIRM",
-    "cancel": "CANCEL",
+    "ok": "Confirm",
+    "cancel": "Cancel",
     "txtError": "Error",
     "disconnected": "Lost connection to device",
 
     "createGroup": "Create a new group",
-    "addDevice": "Add device",
+    "addDevice": "Add/Remove device",
     "renameGroup": "Renaming group",
     "deleteGroup": "Delete group",
     "errorGroup": "This group already exists",
@@ -59,6 +62,9 @@
     "deleteDevice": "Delete device from group",
     "numberOfDevices": "Number of devices found",
     "areUSure": "Are you sure?",
+
+    "txtHideAllDevices": "Hide group all devices",
+    "txtShowAllDevices": "Show group all devices",
 
     "tapToMoreInfo": "Tap to more info",
 
@@ -89,13 +95,15 @@
     "Poor": "Poor",
     "Unhealthy": "Unhealthy",
 
+    "txtGroup": "Group settings",
+
     "txtVersion": "Version",
     "txtNothing": "Nothing here",
 
     "txtColorIndicator": "Colors Indicator",
     "txDataHistory": "Data history",
     "txtTapToDown": "Tap to download",
-    "txtTapAndHold":  "Long press on the sensor box to set the warning",
+    "txtTapAndHold":  "Tap on the sensor box to set the warning",
     "txtTurnOffAlarm": "Warning is off",
     "txtNormalDevice": "The device is active",
     
@@ -117,7 +125,10 @@
     "txtAddDeviceDone": "Add device successfully",
     "txtErrAddDevice": "Error, please check again",
 
-    
+    "txtAllDevices": "All devices",
+
+    "txtDone": "Done",
+
 
     "NONE": "None"
 }
