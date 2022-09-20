@@ -16,7 +16,7 @@ export class MailService {
         to: to, // List of receivers email address
         from: 'tuvangiamsatbachkhoa@gmail.com', // Senders email address
         subject: subject,
-        template: template, // The `.pug` or `.hbs` extension is appended automatically.
+        template: __dirname + template, // The `.pug` or `.hbs` extension is appended automatically.
         context:context,
       })
       .then((success) => {
@@ -27,5 +27,6 @@ export class MailService {
       });
 
     }
+
 
 }

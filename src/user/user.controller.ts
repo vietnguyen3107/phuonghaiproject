@@ -4,12 +4,13 @@ import { User } from './user.entity'
 import * as bcrypt from 'bcryptjs';
 import { RequestModel } from './basic.auth.middleware';
 import { eachMonthOfInterval } from 'date-fns';
+import { MailService } from 'src/mail/mail.service';
 
 
 
 @Controller('Users')
 export class UserController {
-  constructor(private readonly userService: UserService ) {
+  constructor(private readonly userService: UserService, private mailService : MailService ) {
 
   }
 
@@ -75,6 +76,9 @@ export class UserController {
       dbUser.resetDate = new Date();
 
       await this.userService.update(dbUser);
+
+      //send mail
+      await this.mailService.send(dbUser.Email, "Reset password Confirm", "/templates/index",{email: dbUser.Email, token: token})
 
       return {status: HttpStatus.OK, message: "Reset email has been sent!"}
     }
