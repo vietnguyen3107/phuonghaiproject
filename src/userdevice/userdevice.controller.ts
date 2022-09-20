@@ -42,10 +42,6 @@ export class UserdeviceController {
   }
  
 
-  @Get()
-  findAll() {
-    return this.userdeviceService.findAll();
-  }
 
   @Get(':id')
   findOne(@Param() params) {
@@ -55,6 +51,11 @@ export class UserdeviceController {
   @Get('/UserDeviceByDevice')
   async filter( @Query('DeviceSerialNumber') deviceSerialNumber: string ): Promise<any> {
     return this.userdeviceService.getAllUserDevicesByDevice(deviceSerialNumber)
+  }
+
+  @Get('/UserDeviceByUser')
+  async UserDeviceByUser( @Req() req): Promise<any> {
+    return this.userdeviceService.viet(req.user)
   }
 
 

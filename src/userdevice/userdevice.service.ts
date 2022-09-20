@@ -5,6 +5,7 @@ import { getManager, Repository } from 'typeorm';
 
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
+import { User } from 'src/user/user.entity';
 
 
 @Injectable()
@@ -45,4 +46,5 @@ export class UserDeviceService {
     return rawData
 
   }
+
 }
