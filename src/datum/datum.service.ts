@@ -9,6 +9,7 @@ import { LabService } from 'src/lab/lab.service';
 
 import * as moment from "moment";
 import { zhCN } from 'date-fns/locale';
+import { Datum_lastest } from './datum_lastest.entity';
 
 
 
@@ -18,6 +19,9 @@ export class DatumService {
   constructor(
     @InjectRepository(Datum)
     private readonly datumRepo: Repository<Datum>,
+
+    @InjectRepository(Datum_lastest)
+    private readonly datumlastestRepo: Repository<Datum_lastest>,
 
     private readonly labService: LabService,
   ) { }
@@ -33,27 +37,66 @@ export class DatumService {
 
   async create(datum: Datum): Promise<any> {
 
-    const entityManager = getManager();
-    let sql = `select * from datum 
-    where SensorType='${datum.SensorType}' and DeviceSerialNumber='${datum.DeviceSerialNumber}' 
-    and ReceivedDate='${datum.ReceivedDate}'`
+    //insert datum
+    this.datumlastestRepo
+    .createQueryBuilder()
+    .insert()
+    .values(datum)
+    .orUpdate({overwrite: ['Value', 'Status', 'ReceivedDate', 'Unit']  })
+	  .execute();
+    // .upsert([datum], ['DeviceSerialNumber', 'SensorType']);
 
-    //console.log(sql)
-    let rawData = await entityManager.query(sql)
 
-    // if (rawData !== null) {
-    //   await entityManager.query(`delete from datum 
-    //   where SensorType='${datum.SensorType}' and DeviceSerialNumber='${datum.DeviceSerialNumber}' 
-    //   and ReceivedDate='${datum.ReceivedDate}'`)
+    let datumObj = await this.datumRepo.findOne({
+      where: {
+        SensorType: datum.SensorType,
+        DeviceSerialNumber: datum.DeviceSerialNumber,
+        ReceivedDate: datum.ReceivedDate
+      },
+    });
+
+    if(datumObj && datumObj !== null){
+      datumObj.Value = datum.Value;
+      datumObj.Status = datum.Status;
+      datumObj.Unit = datum.Unit;
+      await this.datumRepo.update(datumObj.Id, datumObj);
+
+      return datumObj;
+    }else{
+      return await this.datumRepo.insert(datum);
+    }
+
+
+    return await this.datumRepo
+    //.upsert([datum], ["Id"])
+    .createQueryBuilder()
+    .insert()
+    .values(datum)
+    .orUpdate({overwrite: ['Value', 'Status'] , conflict_target: ['DeviceSerialNumber', 'SensorType', 'ReceivedDate'] })
+	  .execute();
+
+
+    // const entityManager = getManager();
+    // let sql = `select * from datum 
+    // where SensorType='${datum.SensorType}' and DeviceSerialNumber='${datum.DeviceSerialNumber}' 
+    // and ReceivedDate='${datum.ReceivedDate}'`
+
+    // //console.log(sql)
+    // let rawData = await entityManager.query(sql)
+
+    // // if (rawData !== null) {
+    // //   await entityManager.query(`delete from datum 
+    // //   where SensorType='${datum.SensorType}' and DeviceSerialNumber='${datum.DeviceSerialNumber}' 
+    // //   and ReceivedDate='${datum.ReceivedDate}'`)
+    // // }
+
+
+    // if (rawData.length === 0) {
+    //   return await this.datumRepo.insert(datum)
     // }
-
-
-    if (rawData.length === 0) {
-      return await this.datumRepo.save(datum)
-    }
-    else {
-      return { "Error": "Duplicate" }
-    }
+    // else {
+    //   return { "Error": "Duplicate" }
+    // }
   }
 
   async update(task: Datum): Promise<UpdateResult> {
@@ -256,15 +299,11 @@ export class DatumService {
 
     const entityManager = getManager();
 
-    let sql = `select d.*, t.SensorType, t.DeviceSerialNumber, t.ReceivedDate, t.Value, t.Status, t.Unit
-    from datum t
-    inner join (
-        select SensorType, DeviceSerialNumber, max(ReceivedDate) as MaxDate
-        from datum
-        group by SensorType, DeviceSerialNumber
-    ) tm on t.SensorType = tm.SensorType and t.DeviceSerialNumber=tm.DeviceSerialNumber and t.ReceivedDate = tm.MaxDate
-    inner join device d on d.SerialNumber= t.DeviceSerialNumber
-    where d.Id in (select Device_Id from userdevice where User_Id = ${userId})
+    let sql = `select dt.SensorType, dt.DeviceSerialNumber, dt.ReceivedDate, dt.Value, dt.Status, dt.Unit
+    from datum_lastest dt
+    inner join device d on d.SerialNumber= dt.DeviceSerialNumber
+    inner join userdevice ud on ud.Device_Id = d.Id
+    where ud.User_Id = ${userId}
     `
 
     const rawData = await entityManager.query(sql)

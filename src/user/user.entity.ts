@@ -14,9 +14,18 @@ export class User{
   @Column('text')
   Password: string;
 
-  @OneToMany(type => UserDevice, userDevice => userDevice.User, {eager: true})
-  userDevices: UserDevice[] 
+  
+  @Column('text')
+  resetToken: string;
+  @Column('datetime')
+  resetDate: Date;
 
-  // @OneToMany(() => Photo, photo => photo.user)
-  //   photos: Photo[];
+
+
+  @Column('tinyint')
+  isDeleted: boolean;
+
+  @Column('datetime')
+  deletedDate: Date;
+
 }

@@ -14,7 +14,8 @@ import { UserdeviceModule } from './userdevice/userdevice.module';
 import { DevicegroupModule } from './devicegroup/devicegroup.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 
 @Module({
   imports: [
@@ -25,6 +26,27 @@ import { join } from 'path';
     //       autoLoadEntities: true,
     //     }),
     //   }),
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.EMAIL_HOST,
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+          user: process.env.EMAIL_ID, // generated ethereal user
+          pass: process.env.EMAIL_PASS // generated ethereal password
+        },
+      },
+      defaults: {
+        from: '"nest-modules" <user@outlook.com>', // outgoing email ID
+      },
+      template: {
+        dir: process.cwd() + '/template/',
+        adapter: new HandlebarsAdapter(), // or new PugAdapter()
+        options: {
+          strict: true,
+        },
+      },
+    }),
 
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'frontend'),
@@ -35,14 +57,14 @@ import { join } from 'path';
       //host: '52.74.203.70',
 
       //new db
-       host: '52.74.63.36',
+       host: '42.117.5.115',
      // host: 'localhost',
       port: 3306,
-      username: 'phuonghai',
-      password: 'phuonghai',
-      database: 'phuonghai',
+      username: 'vietnguyen3107',
+      password: '123456',
+      database: 'greenlab',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-
+      logging: true,
       autoLoadEntities: true,
       synchronize: false,
     }),
@@ -61,8 +83,7 @@ export class AppModule implements NestModule {
     consumer.apply(BasicAuthMiddleware)
     .exclude(
       'Users/Auth/(.*)',
-      'frontend/(.*)',
-      '(.*)',
+      'frontend/(.*)'
     )
     .forRoutes('/');
   }

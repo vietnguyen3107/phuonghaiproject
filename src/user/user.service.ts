@@ -54,7 +54,7 @@ export class UserService {
       },
     });
 
-    if (!dbUser) return null
+    if (!dbUser || dbUser.isDeleted) return null
     
     const isMatch = await bcrypt.compare( user.Password, dbUser.Password,);
 

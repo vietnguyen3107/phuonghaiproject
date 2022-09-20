@@ -1,13 +1,15 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Req, HttpStatus, Request, HostParam, Query } from '@nestjs/common';
 import { UserService } from './user.service'
 import { User } from './user.entity'
 import * as bcrypt from 'bcryptjs';
+import { RequestModel } from './basic.auth.middleware';
+import { eachMonthOfInterval } from 'date-fns';
 
 
 
 @Controller('Users')
 export class UserController {
-  constructor(private readonly userService: UserService) {
+  constructor(private readonly userService: UserService ) {
 
   }
 
@@ -35,9 +37,12 @@ export class UserController {
     return this.userService.update(user);
   }
 
-  @Delete(':Id')
-  deleteUser(@Param() params) {
-    return this.userService.delete(params.Id);
+  @Delete()
+  deleteUser(@Req() req: RequestModel) {
+
+    req.user.isDeleted = true;
+    req.user.deletedDate = new Date();
+    return this.userService.update(req.user);
   }
 
 
@@ -47,15 +52,64 @@ export class UserController {
     let dbUser =  await this.userService.findByEmail(user)
     if (!dbUser) {
       const hash = await bcrypt.hash(user.Password, 10);
-      user.Password = await hash
+      user.Password = hash;
   
        return this.userService.create(user);
     }    
     else
-      return {status: 400, message: "Email already exists"}
+      return {status: HttpStatus.BAD_REQUEST, message: "Email already exists"}
   }
 
 
+  @Post('/Auth/ForgetPass')
+  async forget_password(@Body() body) {
+    const obj = new User();
+    obj.Email = body.email
+    let dbUser =  await this.userService.findByEmail(obj);
+    if (!dbUser) {
+      return {status: HttpStatus.BAD_REQUEST, message: "Email not exists"}
+    }    
+    else{
+      const token = Math.random().toString(36).slice(-8);
+      dbUser.resetToken = token;
+      dbUser.resetDate = new Date();
+
+      await this.userService.update(dbUser);
+
+      return {status: HttpStatus.OK, message: "Reset email has been sent!"}
+    }
+      
+  }
+
+  
+  @Get('/Auth/ResetPass')
+  async reset_password(@Query('email') email, @Query('token') token) {
+
+
+    const obj = new User();
+    obj.Email = email;
+    let dbUser =  await this.userService.findByEmail(obj);
+
+    if (!dbUser) {
+      return {status: HttpStatus.BAD_REQUEST, message: "Email not exists"}
+    } else if (!dbUser.resetDate || dbUser.resetDate > new Date()) {
+      return {status: HttpStatus.BAD_REQUEST, message: "Token has been expired!"}
+    } else if (!dbUser.resetToken || dbUser.resetToken !== token) {
+      return {status: HttpStatus.BAD_REQUEST, message: "Token not valid!"}
+    }
+    else{
+      const randomstring = Math.random().toString(36).slice(-8);
+      const hash = await bcrypt.hash(randomstring, 10);
+      dbUser.Password = hash;
+      dbUser.resetDate = null;
+      dbUser.resetToken = null;
+
+      await this.userService.update(dbUser);
+
+      return {status: HttpStatus.OK, message: "Password has been reset to '" +randomstring+ "', please use it to login and change to your new password!"}
+    }
+      
+  }
   @Post('/Auth/Login')
   async login(@Body() user: User) {
     return await this.userService.login(user)

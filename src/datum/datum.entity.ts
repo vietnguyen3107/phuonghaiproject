@@ -1,7 +1,8 @@
 import { isEmpty } from 'rxjs';
-import { Column, Entity, IsNull, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, IsNull, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity()
+@Unique("unique_datum", ["DeviceSerialNumber", "SensorType", "ReceivedDate"]) // named; multiple fields
 export class Datum{
   @PrimaryGeneratedColumn()
   Id: number;

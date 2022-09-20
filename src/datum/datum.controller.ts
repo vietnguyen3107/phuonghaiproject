@@ -68,6 +68,8 @@ export class DatumController {
 
   @Get('/LastestDataByAllDevices?')
   filter5a(@Req() req: RequestModel): Promise<any> {
+
+
     return this.datumService.getLastestDataByAllDevices2(req.user.Id)
   }
 

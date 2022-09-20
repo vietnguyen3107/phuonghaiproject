@@ -15,7 +15,7 @@ export class UserDevice{
   @Column('int')
   DeviceId: number
 
-  @ManyToOne(type => User, user => user.userDevices,  {eager: false})
+  @ManyToOne(type => User, {eager: false})
   @JoinColumn({name: "User_Id"})   
   User: User;
 

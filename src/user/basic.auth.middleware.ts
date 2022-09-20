@@ -20,7 +20,7 @@ export class BasicAuthMiddleware implements NestMiddleware {
 
 
     async use(req: RequestModel, res: Response, next: NextFunction) {
-        //console.log(req.headers.authorization)
+        console.log(req.headers.authorization)
 
         // check for basic auth header
         if (!req.headers.authorization || req.headers.authorization.indexOf('Basic ') === -1) {
@@ -31,7 +31,10 @@ export class BasicAuthMiddleware implements NestMiddleware {
         const base64Credentials = req.headers.authorization.split(' ')[1];
         const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
         const [email, password] = credentials.split(':');
-        const user = await this.userService.findByEmailAndPassword({ Id: -1, Email: email, Password: password, userDevices: [] });
+        let login = new User();
+        login.Email = email;
+        login.Password = password;
+        const user = await this.userService.findByEmailAndPassword(login);
         if (!user) {
             return res.status(401).json({ message: 'Invalid Authentication Credentials' });
         }
@@ -40,43 +43,43 @@ export class BasicAuthMiddleware implements NestMiddleware {
         // attach user to request object
         req.user = user
 
-        var pathname = url.parse(req.url).pathname
+        // var pathname = url.parse(req.url).pathname
 
-        if (pathname==='/Users' || pathname==='/Devices' || pathname=='/DeviceGroups'){
+        // if (pathname==='/Users' || pathname==='/Devices' || pathname=='/DeviceGroups'){
 
-            console.log(user.Email)
-            if(user.Email!=="admin"){
-                return res.status(401).json({ message: 'Invalid Authentication Credentials - Only admin can do this' });
-            }
-        }
+        //     console.log(user.Email)
+        //     if(user.Email!=="admin"){
+        //         return res.status(401).json({ message: 'Invalid Authentication Credentials - Only admin can do this' });
+        //     }
+        // }
 
-        if (pathname.indexOf('SerialNumber')>=0){
-        try {
-            var query = url.parse(req.url).query
-            // console.log('url='+url.parse(req.url).host)
-            // console.log('url='+url.parse(req.url).pathname)
-            // console.log('url='+url.parse(req.url).search)
-            var qobject = querystring.parse(query);
-            //console.log(qobject.DeviceSerialNumber)
+        // if (pathname.indexOf('SerialNumber')>=0){
+        // try {
+        //     var query = url.parse(req.url).query
+        //     // console.log('url='+url.parse(req.url).host)
+        //     // console.log('url='+url.parse(req.url).pathname)
+        //     // console.log('url='+url.parse(req.url).search)
+        //     var qobject = querystring.parse(query);
+        //     //console.log(qobject.DeviceSerialNumber)
 
-            var permitted = false
-            if (qobject !== '' && qobject !== null) {
-                for (let i = 0; i < user.userDevices.length; i++) {
-                    if (user.userDevices[i].DeviceSerialNumber === qobject.DeviceSerialNumber) {
-                        permitted = true
-                        break
-                    }
-                }
-            }
+        //     var permitted = false
+        //     if (qobject !== '' && qobject !== null) {
+        //         for (let i = 0; i < user.userDevices.length; i++) {
+        //             if (user.userDevices[i].DeviceSerialNumber === qobject.DeviceSerialNumber) {
+        //                 permitted = true
+        //                 break
+        //             }
+        //         }
+        //     }
 
-            if (!permitted) {
-                return res.status(401).json({ message: 'User not permitted on this device' });
-            }
-        }
-        catch (e) {
-            console.log(e.message)
-        }
-    }
+        //     if (!permitted) {
+        //         return res.status(401).json({ message: 'User not permitted on this device' });
+        //     }
+        // }
+        // catch (e) {
+        //     console.log(e.message)
+        // }
+    // }
 
         next();
     }
