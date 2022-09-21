@@ -27,5 +27,8 @@ export class User{
 
   @Column('datetime')
   deletedDate: Date;
+  
+  @Column('text')
+  deletedBy: string;
 
 }

@@ -38,16 +38,35 @@ export class UserController {
     return this.userService.update(user);
   }
 
-  @Delete()
-  deleteUser(@Req() req: RequestModel) {
 
-    req.user.isDeleted = true;
-    req.user.deletedDate = new Date();
-    return this.userService.update(req.user);
-  }
 
 
   //Auth controller
+  @Delete('/Auth')
+  inactiveUser(@Req() req: RequestModel) {
+    const user = new User();
+    user.Id = req.user.Id;
+    user.isDeleted = true;
+    user.deletedDate = new Date();
+    user.deletedBy = req.user.Email;
+
+    return this.userService.update(user);
+  }
+
+
+  // Ensure that endpoint with wildcard (e.g. :id) is registered after static route.
+  @Delete(':Id')
+  deleteUser(@Param() params, @Req() req) {
+    const user = new User();
+    user.Id = params.Id;
+    user.isDeleted = true;
+    user.deletedDate = new Date();
+    user.deletedBy = req.user.Email;
+
+    return this.userService.update(user);
+  }
+
+
   @Post('/Auth/Register')
   async register(@Body() user: User) {
     let dbUser =  await this.userService.findByEmail(user)
