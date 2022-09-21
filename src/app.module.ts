@@ -57,12 +57,12 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
       //host: '52.74.203.70',
 
       //new db
-       host: '42.117.5.115',
+       host: '52.74.63.36',
      // host: 'localhost',
       port: 3306,
-      username: 'vietnguyen3107',
-      password: '123456',
-      database: 'greenlab',
+      username: 'phuonghai',
+      password: 'phuonghai',
+      database: 'phuonghai',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       logging: true,
       autoLoadEntities: true,

@@ -93,10 +93,10 @@ export class UserController {
     const obj = new User();
     obj.Email = email;
     let dbUser =  await this.userService.findByEmail(obj);
-
+    dbUser.resetDate.setDate(dbUser.resetDate.getDate() + 1);
     if (!dbUser) {
       return {status: HttpStatus.BAD_REQUEST, message: "Email not exists"}
-    } else if (!dbUser.resetDate || dbUser.resetDate > new Date()) {
+    } else if (!dbUser.resetDate || dbUser.resetDate < new Date()) {
       return {status: HttpStatus.BAD_REQUEST, message: "Token has been expired!"}
     } else if (!dbUser.resetToken || dbUser.resetToken !== token) {
       return {status: HttpStatus.BAD_REQUEST, message: "Token not valid!"}
