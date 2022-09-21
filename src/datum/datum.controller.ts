@@ -142,7 +142,12 @@ export class DatumController {
 
 
   @Post()
-  create(@Body() datum: Datum) {
+  create(@Body() datum: Datum, @Req() req) {
+    datum.CreatedBy = req.user.Email;
+    
+    datum.CreatedDate = new Date();
+
+    console.log(datum)
     return this.datumService.create(datum);
   }
 

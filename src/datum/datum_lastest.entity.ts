@@ -27,11 +27,14 @@ export class Datum_lastest{
   @Column({ length: 100 })
   Status: string;
 
+  @Column({ length: 100 })
+  CreatedBy: string;
+  
   @CreateDateColumn({ type: 'datetime' })
-  CreateDate : Date;
+  CreatedDate : Date;
 
   @UpdateDateColumn({ type: 'datetime' })
-  UpdateDate : Date;
+  UpdatedDate : Date;
 
   @VersionColumn({ type: 'int' })
   Version: BigInteger;

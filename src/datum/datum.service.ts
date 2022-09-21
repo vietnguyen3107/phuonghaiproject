@@ -42,7 +42,7 @@ export class DatumService {
     .createQueryBuilder()
     .insert()
     .values(datum)
-    .orUpdate({overwrite: ['Value', 'Status', 'ReceivedDate', 'Unit']  })
+    .orUpdate({overwrite: ['Value', 'Status', 'ReceivedDate', 'Unit', 'CreatedDate', 'CreatedBy']  })
 	  .execute();
     // .upsert([datum], ['DeviceSerialNumber', 'SensorType']);
 
@@ -56,12 +56,10 @@ export class DatumService {
     });
 
     if(datumObj && datumObj !== null){
-      datumObj.Value = datum.Value;
-      datumObj.Status = datum.Status;
-      datumObj.Unit = datum.Unit;
-      await this.datumRepo.update(datumObj.Id, datumObj);
+      datum.Id = datumObj.Id;
+      await this.datumRepo.update(datum.Id, datum);
 
-      return datumObj;
+      return datum;
     }else{
       return await this.datumRepo.insert(datum);
     }

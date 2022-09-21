@@ -53,11 +53,6 @@ export class UserdeviceController {
     return this.userdeviceService.getAllUserDevicesByDevice(deviceSerialNumber)
   }
 
-  @Get('/UserDeviceByUser')
-  async UserDeviceByUser( @Req() req): Promise<any> {
-    return this.userdeviceService.viet(req.user)
-  }
-
 
   @Delete(':id')
   remove(@Param() params) {

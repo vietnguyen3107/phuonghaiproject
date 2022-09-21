@@ -24,5 +24,14 @@ export class Datum{
 
   @Column({ length: 100 })
   DeviceSerialNumber: string;
+
+  
+  @Column({ length: 100 })
+  CreatedBy: string;
+
+  
+  @Column({ type: 'datetime' })
+  CreatedDate: Date;
+
 }
 
