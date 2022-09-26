@@ -250,7 +250,7 @@ export class DatumService {
 
 
 
-  async getLastestDataByDevice(deviceSerialNumber: string): Promise<Datum[]> {
+  async getLastestDataByDeviceOld(deviceSerialNumber: string): Promise<Datum[]> {
 
     const entityManager = getManager();
 
@@ -291,6 +291,36 @@ export class DatumService {
 
   }
 
+
+  async getLastestDataByDevice(deviceSerialNumber: string): Promise<Datum[]> {
+
+    const entityManager = getManager();
+
+    //use convert_tz() function to convert to current vietnam timezone
+    //use date() function to extract only date
+
+    // let sql = `select *, convert_tz(ReceivedDate, '+0:00', '+7:00') as RecordedDate  from datum 
+    // where DeviceSerialNumber='${deviceSerialNumber}' 
+    // order by ReceivedDate DESC limit 0,1`
+
+    let sql = ''
+
+    if (deviceSerialNumber && deviceSerialNumber !== '') {
+      sql = `select t.SensorType, t.DeviceSerialNumber, t.ReceivedDate, t.Value, t.Status, t.Unit
+      from datum_lastest t
+      where  t.DeviceSerialNumber = '${deviceSerialNumber}'`
+    }
+    else{
+      sql = `select t.SensorType, t.DeviceSerialNumber, t.ReceivedDate, t.Value, t.Status, t.Unit
+      from datum_lastest t
+      `
+    }
+
+
+    const rawData = entityManager.query(sql)
+    return rawData
+
+  }
 
 
   async getLastestDataByAllDevices2(userId: number): Promise<any> {
