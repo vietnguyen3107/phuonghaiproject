@@ -95,44 +95,39 @@ export class DatumController {
 
     const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
-    const fileName = `DataFile_` + new Date() + '.csv'
-
-    const csvWriter = createCsvWriter({
-      path: fileName,
-      header: [
-        {id: "Date", title: "Date"},
-        {id: "DeviceSerialNumber", title: "DeviceSerialNumber"},
-        {id: "SensorType",  title: "SensorType"},
-        {id: "Value", title: "Value"},
-        {id: "Unit",  title: "Unit"},
-        {id: "Status", title: "Status"}
-       
-      ]
-    });
+    const fileName = `DataFile_` + (new Date()).getTime() + '.csv'
     
     let rawData = await this.datumService.getDataByDate( deviceSerialNumber,startDate, endDate)
  
+    try {
+      const csvWriter = createCsvWriter({
+        path: fileName,
+        header: [
+          {id: "Date", title: "Date"},
+          {id: "DeviceSerialNumber", title: "DeviceSerialNumber"},
+          {id: "SensorType",  title: "SensorType"},
+          {id: "Value", title: "Value"},
+          {id: "Unit",  title: "Unit"},
+          {id: "Status", title: "Status"}
+         
+        ]
+      });
 
-    try{
-    csvWriter
+
+      csvWriter
     .writeRecords(rawData)
     .then(()=> console.log('The CSV file was written successfully'));
 
     const file = createReadStream(join(process.cwd(), fileName));
 
     return new StreamableFile(file);
-    }
-    catch(e){
-      console.log(e)
-    }
 
+    } catch (error) {
+      console.log(error)
+    }
+ 
     return null
 
-  }
-
-  @Get()
-  findAll(): Promise<Datum[]> {
-    return this.datumService.findAll()
   }
 
   @Get(':Id')
@@ -147,14 +142,12 @@ export class DatumController {
     
     datum.CreatedDate = new Date();
 
-    console.log(datum)
     return this.datumService.create(datum);
   }
 
   @Post('/Batch')
   async createBatch(@Body() datums: Datum[]) {
 
-    //console.log(datums)
     const successfulDatums = []
 
     for await (const d of datums) {
