@@ -34,8 +34,10 @@ export class DeviceController {
   }
 
   @Post()
-  create(@Body() lab: Device) {
-    return this.deviceService.create(lab);
+  create(@Body() obj: Device, @Req() request: RequestModel) {
+    obj.CreatedBy = request.user.Email;
+    obj.CreatedDate = new Date();
+    return this.deviceService.create(obj);
   }
 
   @Put()

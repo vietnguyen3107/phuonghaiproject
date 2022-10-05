@@ -36,6 +36,7 @@ export class DeviceService {
 
 
   async create (task: Device): Promise<Device> {
+    
     return await this.deviceRepo.save(task)
   }
 

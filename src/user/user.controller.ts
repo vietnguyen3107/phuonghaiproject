@@ -5,12 +5,13 @@ import * as bcrypt from 'bcryptjs';
 import { RequestModel } from './basic.auth.middleware';
 import { eachMonthOfInterval } from 'date-fns';
 import { MailService } from 'src/mail/mail.service';
+import { DeviceService } from 'src/device/device.service';
 
 
 
 @Controller('Users')
 export class UserController {
-  constructor(private readonly userService: UserService, private mailService : MailService ) {
+  constructor(private readonly userService: UserService, private mailService : MailService, private deviceService : DeviceService ) {
 
   }
 
@@ -19,9 +20,20 @@ export class UserController {
     return this.userService.findAll()
   }
 
+  @Get("/find/:q")
+  find(@Param() params): Promise<User[]> {
+    return this.userService.find(params.q);
+  }
+  
   @Get(':Id')
   get(@Param() params) {
     return this.userService.findOne(params.Id);
+  }
+
+  @Get('/:Id/Devices')
+  async getDeviceOfUser(@Param() params) {
+
+    return  await this.deviceService.findDevicesByUser(params.Id);
   }
 
   // @Post()
@@ -54,17 +66,6 @@ export class UserController {
   }
 
 
-  // Ensure that endpoint with wildcard (e.g. :id) is registered after static route.
-  @Delete(':Id')
-  deleteUser(@Param() params, @Req() req) {
-    const user = new User();
-    user.Id = params.Id;
-    user.isDeleted = true;
-    user.deletedDate = new Date();
-    user.deletedBy = req.user.Email;
-
-    return this.userService.update(user);
-  }
 
 
   @Post('/Auth/Register')
@@ -145,7 +146,31 @@ export class UserController {
   }
   @Post('/Auth/Login')
   async login(@Body() user: User) {
-    return await this.userService.login(user)
+
+    const dbUser = await this.userService.login(user);
+    if(dbUser){
+      dbUser.devices = await this.deviceService.findDevicesByUser(dbUser.Id);
+    }
+    return dbUser
+  }
+
+  
+  @Post('/Auth/Devices')
+  async getDevice(@Req() req: RequestModel) {
+
+    return await this.deviceService.findDevicesByUser(req.user.Id);
+  }
+
+  // Ensure that endpoint with wildcard (e.g. :id) is registered after static route.
+  @Delete(':Id')
+  deleteUser(@Param() params, @Req() req) {
+    const user = new User();
+    user.Id = params.Id;
+    user.isDeleted = true;
+    user.deletedDate = new Date();
+    user.deletedBy = req.user.Email;
+
+    return this.userService.update(user);
   }
 
 }

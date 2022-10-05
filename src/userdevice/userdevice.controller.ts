@@ -3,6 +3,7 @@ import { Controller, Get, Post, Patch, Delete, Body, Param, Query, Req } from '@
 import { UserDeviceService } from './userdevice.service';
 import { UserDevice } from './userdevice.entity';
 import { getManager } from 'typeorm';
+import { RequestModel } from 'src/user/basic.auth.middleware';
 
 
 
@@ -12,7 +13,9 @@ export class UserdeviceController {
   constructor(private readonly userdeviceService: UserDeviceService) {}
 
   @Post()
-  create(@Body() userDevice: UserDevice) {
+  create(@Body() userDevice: UserDevice,@Req() request: RequestModel ) {
+    userDevice.CreatedBy = request.user.Email;
+    userDevice.CreatedDate = new Date();
     return this.userdeviceService.create(userDevice);
   }
 

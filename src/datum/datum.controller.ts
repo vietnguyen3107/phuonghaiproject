@@ -91,7 +91,7 @@ export class DatumController {
   }
 
   @Get('/DataByDate?')
-  async filter9(@Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<StreamableFile> {
+  async DataByDateCSV(@Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<StreamableFile> {
 
     const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
@@ -130,6 +130,14 @@ export class DatumController {
 
   }
 
+  @Get('/DataByDateJSon?')
+  async DataByDateJson(@Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<any> {
+
+    let rawData = await this.datumService.getDataByDate( deviceSerialNumber,startDate, endDate)
+ 
+    return rawData;
+
+  }
   @Get(':Id')
   get(@Param() params) {
     return this.datumService.findOne(params.Id);

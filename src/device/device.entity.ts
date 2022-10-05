@@ -34,6 +34,15 @@ export class Device {
   @Column('text')
   Type: string;
 
+  
+  
+  @Column({ length: 100 })
+  CreatedBy: string;
+
+  
+  @Column({ type: 'datetime' })
+  CreatedDate: Date;
+
   // @Column()
   // LabId: number;
 

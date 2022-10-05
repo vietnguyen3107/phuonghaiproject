@@ -6,10 +6,9 @@ import { LabModule } from './lab/lab.module';
 import { SensorModule } from './sensor/sensor.module';
 import { DeviceModule } from './device/device.module';
 import { DatumModule } from './datum/datum.module';
-import { getConnectionOptions, Repository } from 'typeorm';
 import { UserModule } from './user/user.module';
 import { BasicAuthMiddleware } from './user/basic.auth.middleware';
-import { UserService } from './user/user.service';
+
 import { UserdeviceModule } from './userdevice/userdevice.module';
 import { DevicegroupModule } from './devicegroup/devicegroup.module';
 import { ServeStaticModule } from '@nestjs/serve-static';

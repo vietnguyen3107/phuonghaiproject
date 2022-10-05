@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './user.entity'
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { UpdateResult, DeleteResult } from 'typeorm';
 import { getManager } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
@@ -16,6 +16,12 @@ export class UserService {
 
   async findAll(): Promise<User[]> {
     return await this.userRepo.find();
+  }
+
+  async find(q: string): Promise<User[]> {
+    return await this.userRepo.find({
+      Email: Like("%" +q+ "%")
+  });
   }
 
   async findOne(Id: number): Promise<User> {
@@ -92,6 +98,7 @@ export class UserService {
 
 
     if (dbUser) {
+      
       return dbUser
     }
     else {
