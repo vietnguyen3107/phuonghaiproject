@@ -37,7 +37,7 @@ export class DatumService {
 
   async create(datum: Datum): Promise<any> {
 
-    //insert datum
+    //insert datum LATEST
     this.datumlastestRepo
     .createQueryBuilder()
     .insert()
@@ -63,15 +63,6 @@ export class DatumService {
     }else{
       return await this.datumRepo.insert(datum);
     }
-
-
-    return await this.datumRepo
-    //.upsert([datum], ["Id"])
-    .createQueryBuilder()
-    .insert()
-    .values(datum)
-    .orUpdate({overwrite: ['Value', 'Status'] , conflict_target: ['DeviceSerialNumber', 'SensorType', 'ReceivedDate'] })
-	  .execute();
 
 
     // const entityManager = getManager();
