@@ -16,7 +16,7 @@ export class AlarmController {
   }
 
   @Get('')
-  findByUser(@Query('pageSize') pageSize: number, @Query('page') page: number, @Req() req) {
+  findByUser(@Query('pageSize') pageSize: number = 20, @Query('page') page: number = 1, @Req() req) {
     return this.alarmService.findByUser(req.user.Id, pageSize, page);
   }
 
