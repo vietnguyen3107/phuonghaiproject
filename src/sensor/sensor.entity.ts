@@ -16,11 +16,38 @@ export class Sensor{
   // @Column()
   // DeviceId: number;
 
+  @Column("float") 
+  MinValue: number;
+
+  
+  @Column("float") 
+  MaxValue: number;
+
+
   @Column('text') 
   SensorType: string;
 
   @Column('text') 
   DeviceSerialNumber: string;
+
+  
+  @Column({ length: 100 })
+  CreatedBy: string;
+
+  
+  @Column({ type: 'datetime' })
+  CreatedDate: Date;
+
+  
+  @Column({ length: 100 })
+  UpdatedBy: string;
+
+  
+  @Column({ type: 'datetime' })
+  UpdatedDate: Date;
+
+
+
 
   @ManyToOne(type => Device, Device => Device.Id,  {eager: false})
   @JoinColumn({name: "Device_Id", referencedColumnName: "Id"})    

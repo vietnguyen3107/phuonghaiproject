@@ -35,9 +35,17 @@ export class DeviceService {
   }
 
 
-  async create (task: Device): Promise<Device> {
-    
-    return await this.deviceRepo.save(task)
+  async create (task: Device)  {
+    try {
+      
+      const insertresult = await this.deviceRepo.insert(task);
+      task.Id = insertresult.identifiers[0].Id;
+
+      return {success: true, data: task};
+    } catch (error) {
+      console.log(error)
+      return {success: false, data : {code: error.code, message: error.sqlMessage} };
+    }
   }
 
   async update(task: Device): Promise<UpdateResult> {
