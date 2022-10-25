@@ -51,7 +51,12 @@ export class AlarmService {
     // .skip(from);
   }
   async findOne(id: number) {
-    return await this.alarmRepo.findOne(id);
+    return await this.alarmRepo.findOne(
+      {
+        where: {Id: id},
+        relations: ['Datum'],
+      }
+    );
   }
   async create (item: Alarm) {
     try {

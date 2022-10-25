@@ -41,10 +41,10 @@ export class DeviceService {
       const insertresult = await this.deviceRepo.insert(task);
       task.Id = insertresult.identifiers[0].Id;
 
-      return {success: true, data: task};
+      return {success: true, message: 'success', data: task};
     } catch (error) {
       console.log(error)
-      return {success: false, data : {code: error.code, message: error.sqlMessage} };
+      return {success: false, message: error.sqlMessage, data : {code: error.code, message: error.sqlMessage} };
     }
   }
 
