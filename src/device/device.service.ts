@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Device } from './device.entity' 
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getManager } from 'typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { Repository, getManager, EntityManager } from 'typeorm';
 import { UpdateResult, DeleteResult } from  'typeorm';
 
 
@@ -10,23 +10,38 @@ export class DeviceService {
   constructor(
     @InjectRepository(Device)
     private readonly deviceRepo: Repository<Device>,
+    @InjectEntityManager() private entityManager: EntityManager,
   ) {}
 
   async findAll (): Promise<Device[]> {
     return await this.deviceRepo.find();
   }
 
-  async findDevicesByUser (userId: number): Promise<Device[]> {
+  async findDevicesByUser (userId: number) {
 
-    const entityManager = getManager();
+    try {
+         return this.entityManager
+    .createQueryBuilder(Device, "d")
+    .innerJoin("d.userDevices", "ud", "ud.DeviceId = d.Id")
+    .where("ud.User_Id= :userid", { userid: userId })
+    .getMany();
+    } catch (error) {
+      return {
+        success: false,
+        data: error
+      }
+    }
+ 
+    // const entityManager = getManager();
 
-    const sql = `select device.* from device 
-     inner join userdevice where device.Id=userdevice.Device_Id
-     and userdevice.User_Id=${userId}`
+    // const sql = `select device.* from device 
 
-    const rawData = entityManager.query(sql)
+    //  inner join userdevice where device.Id=userdevice.Device_Id
+    //  and userdevice.User_Id=${userId}`
 
-    return rawData
+    // const rawData = entityManager.query(sql)
+
+    // return rawData
     
   }
 
