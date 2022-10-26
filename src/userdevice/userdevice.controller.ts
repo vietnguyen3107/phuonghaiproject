@@ -4,10 +4,10 @@ import { UserDeviceService } from './userdevice.service';
 import { UserDevice } from './userdevice.entity';
 import { getManager } from 'typeorm';
 import { RequestModel } from 'src/user/basic.auth.middleware';
+import { ApiTags,ApiSecurity, ApiOperation, ApiParam} from '@nestjs/swagger';
 
-
-
-
+@ApiTags('UserDevices')
+@ApiSecurity('access-key')
 @Controller('UserDevices')
 export class UserdeviceController {
   constructor(private readonly userdeviceService: UserDeviceService) {}

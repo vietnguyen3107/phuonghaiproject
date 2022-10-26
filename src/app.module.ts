@@ -18,15 +18,10 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { AlarmModule } from './alarm/alarm.module';
 
 
+
 @Module({
   imports: [
-    //  TypeOrmModule.forRootAsync({
-    //   useFactory: async () =>
-    //     Object.assign(await 
-    //      getConnectionOptions(), {
-    //       autoLoadEntities: true,
-    //     }),
-    //   }),
+
     MailerModule.forRoot({
       transport: {
         host: "smtp.gmail.com",
