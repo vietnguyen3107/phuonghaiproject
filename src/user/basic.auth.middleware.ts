@@ -20,8 +20,7 @@ export class BasicAuthMiddleware implements NestMiddleware {
 
 
     async use(req: RequestModel, res: Response, next: NextFunction) {
-        console.log(req.headers.authorization)
-
+        console.log("authorization = " + req.headers.authorization)
         // check for basic auth header
         if (!req.headers.authorization || req.headers.authorization.indexOf('Basic ') === -1) {
             return res.status(401).json({ message: 'Missing Authorization Header' });

@@ -79,6 +79,8 @@ export class AppModule implements NestModule {
     consumer.apply(BasicAuthMiddleware)
     .exclude(
       'Users/Auth/(.*)',
+      '/api',
+      '/flutter_service_worker.js',
       'frontend/(.*)'
     )
     .forRoutes('/');

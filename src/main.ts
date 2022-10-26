@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as helmet from 'helmet';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { BasicAuthMiddleware } from './user/basic.auth.middleware';
 // somewhere in your initialization file
 
 
@@ -45,7 +46,6 @@ async function bootstrap() {
   //   res.header('Access-Control-Allow-Headers', 'Content-Type, Accept');
   //   next();
   // });
-
 
 
   await app.listen(3000);
