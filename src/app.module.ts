@@ -16,15 +16,10 @@ import { join } from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 
+
 @Module({
   imports: [
-    //  TypeOrmModule.forRootAsync({
-    //   useFactory: async () =>
-    //     Object.assign(await 
-    //      getConnectionOptions(), {
-    //       autoLoadEntities: true,
-    //     }),
-    //   }),
+
     MailerModule.forRoot({
       transport: {
         host: "smtp.gmail.com",
