@@ -28,7 +28,7 @@ export class DeviceController {
 
   @Get('/ByUser')
   @ApiOperation({ summary: 'Lấy các device mà User có quyền' })
-  findDevicesByUser(@Req() request: RequestModel): Promise<Device[]> {
+  findDevicesByUser(@Req() request: RequestModel) {
     return this.deviceService.findDevicesByUser(request.user.Id)
   }
 

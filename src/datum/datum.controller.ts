@@ -152,7 +152,6 @@ export class DatumController {
   @ApiOperation({ summary: 'insert Datum' })
   create(@Body() datum: Datum, @Req() req) {
     datum.CreatedBy = req.user.Email;
-    
     datum.CreatedDate = new Date();
 
     return this.datumService.create(datum);
@@ -160,12 +159,14 @@ export class DatumController {
 
   @Post('/Batch')
   @ApiOperation({ summary: 'Insert danh sách các Datum ' })
-  async createBatch(@Body() datums: Datum[]) {
+  async createBatch(@Body() datums: Datum[], @Req() req) {
 
     const successfulDatums = []
 
     for await (const d of datums) {
       try{
+        d.CreatedBy = req.user.Email;
+        d.CreatedDate = new Date();
         let result =  await this.datumService.create(d);
         if (result.hasOwnProperty('ReceivedDate')){
           successfulDatums.push(d)

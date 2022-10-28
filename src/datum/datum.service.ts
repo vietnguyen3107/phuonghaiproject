@@ -3,13 +3,14 @@ import { Datum } from './datum.entity'
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateResult, DeleteResult, getManager } from 'typeorm';
-import { LargeNumberLike } from 'crypto';
-import { Lab } from 'src/lab/lab.entity';
-import { LabService } from 'src/lab/lab.service';
+
 
 import * as moment from "moment";
-import { zhCN } from 'date-fns/locale';
 import { Datum_lastest } from './datum_lastest.entity';
+import { SensorService } from 'src/sensor/sensor.service';
+import { Sensor } from 'src/sensor/sensor.entity';
+import { AlarmService } from 'src/alarm/alarm.service';
+import { Alarm } from 'src/alarm/entities/alarm.entity';
 
 
 
@@ -23,7 +24,8 @@ export class DatumService {
     @InjectRepository(Datum_lastest)
     private readonly datumlastestRepo: Repository<Datum_lastest>,
 
-    private readonly labService: LabService,
+    private readonly sensorService: SensorService,
+    private readonly alarmService: AlarmService,
   ) { }
 
   async findAll(): Promise<Datum[]> {
@@ -36,6 +38,30 @@ export class DatumService {
 
 
   async create(datum: Datum): Promise<any> {
+
+    //check datum data
+    let sensor : Sensor;
+    let alarmYN : boolean = false;
+    sensor = await this.sensorService.findOneByTypeAndDeviceNumber(datum.SensorType, datum.DeviceSerialNumber);
+    if(sensor.MinValue && sensor.MaxValue){
+      //[min,max]
+      if(sensor.MinValue <= sensor.MaxValue){
+        //value ngoai khoang [min,max]
+        if(!(datum.Value >= sensor.MinValue && datum.Value <= sensor.MaxValue)){
+          //save alarm
+          alarmYN = true;
+        }
+      } 
+      //(...,max] - [min,...)
+      else {
+        //value ngoai khoang (-,max] --> [min,+)
+        if(!(datum.Value >= sensor.MinValue || datum.Value <= sensor.MaxValue) ){
+          //save alarm
+          alarmYN = true;
+
+        }
+      }
+    }
 
     //insert datum LATEST
     this.datumlastestRepo
@@ -57,39 +83,39 @@ export class DatumService {
 
     if(datumObj && datumObj !== null){
       datum.Id = datumObj.Id;
+      datum.AlarmYN = alarmYN;
       await this.datumRepo.update(datum.Id, datum);
 
-      return datum;
     }else{
-      return await this.datumRepo.insert(datum);
+      datum.AlarmYN = alarmYN;
+      let insertresult = await this.datumRepo.insert(datum);
+      datum.Id = insertresult.identifiers[0].Id;
     }
 
+    //insert alarm
+    if(alarmYN === true){
+      let alarm = new Alarm();
+      alarm.Datum = datum;
+      alarm.Message = `Dữ liệu ngoài khoảng cho phép!`;
+      alarm.DeviceSerialNumber = datum.DeviceSerialNumber;
+      alarm.SensorType = datum.SensorType;
+      alarm.ReceivedDate = datum.ReceivedDate;
+      alarm.MinValue = sensor.MinValue;
+      alarm.MaxValue = sensor.MaxValue;
+      alarm.Value = datum.Value;
 
-    // const entityManager = getManager();
-    // let sql = `select * from datum 
-    // where SensorType='${datum.SensorType}' and DeviceSerialNumber='${datum.DeviceSerialNumber}' 
-    // and ReceivedDate='${datum.ReceivedDate}'`
+      alarm.CreatedBy = datum.CreatedBy;
+      alarm.CreatedDate = new Date();
 
-    // //console.log(sql)
-    // let rawData = await entityManager.query(sql)
+      await this.alarmService.create(alarm);
+    }
 
-    // // if (rawData !== null) {
-    // //   await entityManager.query(`delete from datum 
-    // //   where SensorType='${datum.SensorType}' and DeviceSerialNumber='${datum.DeviceSerialNumber}' 
-    // //   and ReceivedDate='${datum.ReceivedDate}'`)
-    // // }
+      return datum;
 
-
-    // if (rawData.length === 0) {
-    //   return await this.datumRepo.insert(datum)
-    // }
-    // else {
-    //   return { "Error": "Duplicate" }
-    // }
   }
 
-  async update(task: Datum): Promise<UpdateResult> {
-    return await this.datumRepo.update(task.Id, task);
+  async update(obj: Datum): Promise<UpdateResult> {
+    return await this.datumRepo.update(obj.Id, obj);
   }
 
   async delete(Id): Promise<DeleteResult> {

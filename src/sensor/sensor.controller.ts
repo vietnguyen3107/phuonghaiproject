@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Req } from '@nestjs/common';
 import { SensorService } from './sensor.service'
 import { Sensor} from './sensor.entity'
-import { UserService } from 'src/user/user.service';
 
+import { ApiTags,ApiSecurity, ApiOperation, ApiParam} from '@nestjs/swagger';
 
+@ApiTags('Sensors')
+@ApiSecurity('access-key')
 @Controller('Sensors')
 export class SensorController {
   constructor(private readonly sensorService: SensorService) {
@@ -22,22 +24,29 @@ export class SensorController {
   }
 
   @Post()
-  create(@Body() sensor: Sensor) {
+  create(@Body() sensor: Sensor, @Req() req) {
+    sensor.CreatedBy = req.user.Email;
+    
+    sensor.CreatedDate = new Date();
     return this.sensorService.create(sensor);
   }
 
   @Post('/Batch')
-  createBatch(@Body() sensors: Sensor[]) {
+  createBatch(@Body() sensors: Sensor[], @Req() req) {
 
-    
-    sensors.forEach(d => {
-      this.sensorService.create(d);
+    sensors.forEach(item => {
+      item.CreatedBy = req.user.Email;
+      item.CreatedDate = new Date();
+
+      this.sensorService.create(item);
     });
     return sensors;
   }
 
   @Put()
-  update(@Body() sensor: Sensor) {
+  update(@Body() sensor: Sensor, @Req() req) {
+    sensor.UpdatedBy = req.user.Email;
+    sensor.UpdatedDate = new Date();
     return this.sensorService.update(sensor);
   }
 

@@ -1,7 +1,11 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { DevicegroupService } from './devicegroup.service';
 import { Devicegroup } from './devicegroup.entity';
-import { get } from 'http';
+
+import { ApiTags,ApiSecurity, ApiOperation, ApiParam} from '@nestjs/swagger';
+
+@ApiTags('DeviceGroups')
+@ApiSecurity('access-key')
 @Controller('DeviceGroups')
 export class DevicegroupController {
     constructor(private readonly devicegroupService: DevicegroupService){}

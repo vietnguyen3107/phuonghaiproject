@@ -15,6 +15,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { AlarmModule } from './alarm/alarm.module';
+
 
 
 @Module({
@@ -62,7 +64,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
       autoLoadEntities: true,
       synchronize: false,
     }),
-    LabModule, SensorModule, DeviceModule, DatumModule, UserModule, UserdeviceModule, DevicegroupModule,
+    LabModule, SensorModule, DeviceModule, DatumModule, UserModule, UserdeviceModule, DevicegroupModule, AlarmModule,
 
   ],
   controllers: [AppController],
@@ -77,6 +79,8 @@ export class AppModule implements NestModule {
     consumer.apply(BasicAuthMiddleware)
     .exclude(
       'Users/Auth/(.*)',
+      '/api',
+      '/flutter_service_worker.js',
       'frontend/(.*)'
     )
     .forRoutes('/');

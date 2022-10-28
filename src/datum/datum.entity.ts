@@ -26,6 +26,9 @@ export class Datum{
   DeviceSerialNumber: string;
 
   
+  @Column({ default: false })
+  AlarmYN: boolean = false;
+  
   @Column({ length: 100 })
   CreatedBy: string;
 

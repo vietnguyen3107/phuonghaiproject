@@ -97,6 +97,7 @@ export class Device {
   })
   IsActive: boolean;
 
-  @OneToMany(() => UserDevice, userDevice => userDevice.Id)
+  @OneToMany(() => UserDevice, userDevice => userDevice.Device)
+  @JoinColumn()
   userDevices: UserDevice[];
 }
