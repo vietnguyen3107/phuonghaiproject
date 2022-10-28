@@ -3,12 +3,15 @@ import { UserService } from './user.service'
 import { User } from './user.entity'
 import * as bcrypt from 'bcryptjs';
 import { RequestModel } from './basic.auth.middleware';
-import { eachMonthOfInterval } from 'date-fns';
 import { MailService } from 'src/mail/mail.service';
 import { DeviceService } from 'src/device/device.service';
 
 
 
+import { ApiTags,ApiSecurity, ApiOperation, ApiParam} from '@nestjs/swagger';
+
+@ApiTags('Users')
+@ApiSecurity('access-key')
 @Controller('Users')
 export class UserController {
   constructor(private readonly userService: UserService, private mailService : MailService, private deviceService : DeviceService ) {

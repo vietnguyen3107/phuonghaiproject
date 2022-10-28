@@ -3,6 +3,10 @@ import { LabService } from './lab.service'
 import { Lab } from './lab.entity'
 
 
+import { ApiTags,ApiSecurity, ApiOperation, ApiParam} from '@nestjs/swagger';
+
+@ApiTags('Labs')
+@ApiSecurity('access-key')
 @Controller('Labs')
 export class LabController {
   constructor(private readonly labService: LabService) {

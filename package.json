@@ -29,6 +29,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/serve-static": "^3.0.0",
+    "@nestjs/swagger": "^6.1.2",
     "@nestjs/typeorm": "^8.0.2",
     "@types/nodemailer": "^6.4.6",
     "bcryptjs": "^2.4.3",

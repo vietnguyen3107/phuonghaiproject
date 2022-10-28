@@ -1,46 +1,43 @@
 import { Controller, StreamableFile, Get, Post, Put, Delete, Body, Param, Query, Res, Req } from '@nestjs/common';
 import { DatumService } from './datum.service'
 import { Datum } from './datum.entity'
-import { Lab } from 'src/lab/lab.entity';
-import { Between } from 'typeorm';
-
 import { createReadStream } from 'fs';
 import { join } from 'path';
-
-import { Request } from 'express';
 import { RequestModel } from 'src/user/basic.auth.middleware';
 
+import { ApiTags,ApiSecurity, ApiOperation, ApiParam} from '@nestjs/swagger';
 
+@ApiTags('Datums')
+@ApiSecurity('access-key')
 @Controller('Datums')
 export class DatumController {
   constructor(private readonly datumService: DatumService) {
 
   }
-  //Local Endpoint: http://localhost:3000/Datums/LastHour?SensorType=CO2&DeviceSerialNumber=Serial1
-  //Remote Endpoint: https://thegreenlab.xyz/Datums/LastHour?SensorType=CO2&DeviceSerialNumber=Serial1
+
   @Get('/LastHour?')
+  @ApiOperation({ summary: 'Dữ liệu Datum của Sensor trong khoảng 1h gần nhất' })
   filter(@Query('SensorType') sensorType: string, @Query('DeviceSerialNumber') deviceSerialNumber: string ): Promise<Datum[]> {
     return this.datumService.getDatumLastHour(sensorType, deviceSerialNumber)
   }
 
-    //Local Endpoint: http://localhost:3000/Datums/LastHour?SensorType=CO2&DeviceSerialNumber=Serial1
-  //Remote Endpoint: https://thegreenlab.xyz/Datums/LastHour?SensorType=CO2&DeviceSerialNumber=Serial1
+  
   @Get('/Last24Hours?')
+  @ApiOperation({ summary: 'Dữ liệu Datum của Sensor trong khoảng 24h gần nhất' })
   filter1(@Query('SensorType') sensorType: string, @Query('DeviceSerialNumber') deviceSerialNumber: string ): Promise<Datum[]> {
     return this.datumService.getDatumLast24Hours(sensorType, deviceSerialNumber)
   }
 
 
-  //Local Endpoint: http://localhost:3000/Datums/Last7Days?SensorType=CO2&DeviceSerialNumber=Serial1
-  //Remote Endpoint: https://thegreenlab.xyz/Datums/Last7Days?SensorType=CO2&DeviceSerialNumber=Serial1
-  
+
+  @ApiOperation({ summary: 'Dữ liệu Datum của Sensor trong khoảng 7 ngày gần nhất' })
   @Get('/Last7Days?')
   filter2(@Query('SensorType') sensorType: string, @Query('DeviceSerialNumber') deviceSerialNumber: string ): Promise<Datum[]> {
     return this.datumService.getDatumLast7Days(sensorType, deviceSerialNumber)
   }
 
-  //Local Endpoint: http://localhost:3000/Datums/Last30Days?SensorType=CO2&DeviceSerialNumber=Serial1
-  //Remote Endpoint: https://thegreenlab.xyz/Datums/Last30Days?SensorType=CO2&DeviceSerialNumber=Serial1
+
+  @ApiOperation({ summary: 'Dữ liệu Datum của Sensor trong khoảng 30 ngày gần nhất' })
   @Get('/Last30Days?')
   filter3(@Query('SensorType') sensorType: string, @Query('DeviceSerialNumber') deviceSerialNumber: string ): Promise<Datum[]> {
     return this.datumService.getDatumLast30Days(sensorType, deviceSerialNumber)
@@ -48,6 +45,7 @@ export class DatumController {
 
 
   @Get('/StatisticData?')
+  @ApiOperation({ summary: 'Lấy dữ liệu phân tích Datum' })
   async filter4( @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<any> {
     const data = await this.datumService.getStatisticData( startDate, endDate)
     if (data === null) 
@@ -62,11 +60,13 @@ export class DatumController {
   }
 
   @Get('/LastestDataByDevice?')
+  @ApiOperation({ summary: 'Dữ liệu Datum mới nhất theo DeviceSerialNumber' })
   filter5( @Query('DeviceSerialNumber') deviceSerialNumber: string ): Promise<Datum[]> {
     return this.datumService.getLastestDataByDevice(deviceSerialNumber)
   }
 
   @Get('/LastestDataByAllDevices?')
+  @ApiOperation({ summary: 'Dữ liệu Datummới nhất của tất cả các thiết bị' })
   filter5a(@Req() req: RequestModel): Promise<any> {
 
 
@@ -91,6 +91,7 @@ export class DatumController {
   }
 
   @Get('/DataByDate?')
+  @ApiOperation({ summary: 'Dữ liệu Datum của Device trong khoảng StartDate - EndDate, dạng CSV' })
   async DataByDateCSV(@Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<StreamableFile> {
 
     const createCsvWriter = require('csv-writer').createObjectCsvWriter;
@@ -131,6 +132,7 @@ export class DatumController {
   }
 
   @Get('/DataByDateJSon?')
+  @ApiOperation({ summary: 'Dữ liệu Datum của Device trong khoảng StartDate - EndDate, dạng JSON' })
   async DataByDateJson(@Query('DeviceSerialNumber') deviceSerialNumber: string, @Query('StartDate') startDate: string, @Query('EndDate') endDate: string ): Promise<any> {
 
     let rawData = await this.datumService.getDataByDate( deviceSerialNumber,startDate, endDate)
@@ -139,27 +141,32 @@ export class DatumController {
 
   }
   @Get(':Id')
+  @ApiOperation({ summary: 'Thông tin chi tiết 1 Datum theo ID' })
+  @ApiParam({name: 'Id', required: true, description: 'ID của Datum'})
   get(@Param() params) {
     return this.datumService.findOne(params.Id);
   }
 
 
   @Post()
+  @ApiOperation({ summary: 'insert Datum' })
   create(@Body() datum: Datum, @Req() req) {
     datum.CreatedBy = req.user.Email;
-    
     datum.CreatedDate = new Date();
 
     return this.datumService.create(datum);
   }
 
   @Post('/Batch')
-  async createBatch(@Body() datums: Datum[]) {
+  @ApiOperation({ summary: 'Insert danh sách các Datum ' })
+  async createBatch(@Body() datums: Datum[], @Req() req) {
 
     const successfulDatums = []
 
     for await (const d of datums) {
       try{
+        d.CreatedBy = req.user.Email;
+        d.CreatedDate = new Date();
         let result =  await this.datumService.create(d);
         if (result.hasOwnProperty('ReceivedDate')){
           successfulDatums.push(d)
@@ -175,6 +182,7 @@ export class DatumController {
 
 
   @Put()
+  @ApiOperation({ summary: 'Cập nhật Datum' })
   update(@Body() datum: Datum) {
     return this.datumService.update(datum);
   }

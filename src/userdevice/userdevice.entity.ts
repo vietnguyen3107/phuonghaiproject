@@ -19,11 +19,9 @@ export class UserDevice{
   @JoinColumn({name: "User_Id"})   
   User: User;
 
-  // @ManyToOne(() => User, user => user.photos)
-  // user: User;
 
   @ManyToOne(type => Device, device => device.userDevices,  {eager: false})
-  @JoinColumn({name: "Device_Id"})  
+  @JoinColumn({name: "DeviceId"})  
   Device: Device;
 
 
