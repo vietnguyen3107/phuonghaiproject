@@ -1,13 +1,19 @@
 import { Datum } from 'src/datum/datum.entity';
 import { Device } from 'src/device/device.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class Sensor{
   @PrimaryGeneratedColumn()
+  @ApiProperty({
+    description: 'ID tự sinh của Sensor',
+    example: '3'
+  })
   Id: number;
 
   @Column('text')
+  
   Measure: string;
 
   @Column()
@@ -17,17 +23,33 @@ export class Sensor{
   // DeviceId: number;
 
   @Column("float") 
+  @ApiProperty({
+    description: 'Ngưỡng cảnh báo dưới (MinValue)',
+    example: 50
+  })
   MinValue: number;
 
   
   @Column("float") 
+  @ApiProperty({
+    description: 'Ngưỡng cảnh báo trên (Maxvalue)',
+    example: 100
+  })
   MaxValue: number;
 
 
-  @Column('text') 
+  @Column('text')
+  @ApiProperty({
+    description: 'Loại sensor',
+    example: 'Humidity'
+  }) 
   SensorType: string;
 
   @Column('text') 
+  @ApiProperty({
+    description: 'Số SerialNumber của thiết bị chứa Sensor',
+    example: 'Log01210325'
+  }) 
   DeviceSerialNumber: string;
 
   
