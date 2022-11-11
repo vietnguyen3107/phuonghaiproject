@@ -16,6 +16,8 @@ import { join } from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { AlarmModule } from './alarm/alarm.module';
+import { UserDevicegroupModule } from './user-devicegroup/user-devicegroup.module';
+import { UserDevicegroupDeviceModule } from './user-devicegroup-device/user-devicegroup-device.module';
 
 
 
@@ -64,7 +66,7 @@ import { AlarmModule } from './alarm/alarm.module';
       autoLoadEntities: true,
       synchronize: false,
     }),
-    LabModule, SensorModule, DeviceModule, DatumModule, UserModule, UserdeviceModule, DevicegroupModule, AlarmModule,
+    LabModule, SensorModule, DeviceModule, DatumModule, UserModule, UserdeviceModule, DevicegroupModule, AlarmModule, UserDevicegroupModule, UserDevicegroupDeviceModule,
 
   ],
   controllers: [AppController],
