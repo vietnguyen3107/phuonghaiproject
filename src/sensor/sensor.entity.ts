@@ -73,9 +73,6 @@ export class Sensor{
 
   @ManyToOne(type => Device, Device => Device.Id,  {eager: false})
   @JoinColumn({name: "Device_Id", referencedColumnName: "Id"})    
-
-   // defining this is also optional because by default,
-   // the referenced foreign key is named as <column_name>_id or account_id
   Device: Device;
 
   @OneToOne(type=>Datum)

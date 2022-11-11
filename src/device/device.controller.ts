@@ -40,6 +40,14 @@ export class DeviceController {
     return this.deviceService.findOne(params.Id);
   }
 
+
+  @Get('/BySerial/:SerialNumber')
+  @ApiParam({name: 'SerialNumber', required: true, description: 'SerialNumber của  Device'})
+  @ApiOperation({ summary: 'Lấy thông tin chi tiết 1 device theo SerialNumber' })
+  getBySerial(@Param() params) {
+    return this.deviceService.findOneBySerialNumber(params.SerialNumber);
+  }
+
   @Post()  
   @ApiOperation({ summary: 'Tạo mới device' })
   create(@Body() obj: Device, @Req() request: RequestModel) {

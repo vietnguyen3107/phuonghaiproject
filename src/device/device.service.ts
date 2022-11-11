@@ -3,6 +3,7 @@ import { Device } from './device.entity'
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { Repository, getManager, EntityManager } from 'typeorm';
 import { UpdateResult, DeleteResult } from  'typeorm';
+import { Sensor } from 'src/sensor/sensor.entity';
 
 
 @Injectable()
@@ -22,6 +23,7 @@ export class DeviceService {
     try {
          return this.entityManager
     .createQueryBuilder(Device, "d")
+    .innerJoinAndSelect("d.Sensors", "s")
     .innerJoin("d.userDevices", "ud", "ud.DeviceId = d.Id")
     .where("ud.User_Id= :userid", { userid: userId })
     .getMany();
@@ -46,10 +48,22 @@ export class DeviceService {
   }
 
   async findOne (Id: number): Promise<Device> {
-    return await this.deviceRepo.findOne(Id)
+    return await this.deviceRepo.findOne({
+      where: {
+        Id: Id
+      },
+      relations: ["Sensors"]
+    })
   }
 
-
+  async findOneBySerialNumber (SerialNumber: string): Promise<Device> {
+    return await this.deviceRepo.findOne({
+      where: {
+        SerialNumber: SerialNumber
+      },
+      relations: ["Sensors"]
+    })
+  }
   async create (task: Device)  {
     try {
       
@@ -71,8 +85,6 @@ export class DeviceService {
     return await this.deviceRepo.delete(Id);
   }
 
-  async findOneBySerialNumber (SerialNumber: string): Promise<Device> {
-    return await this.deviceRepo.findOne({SerialNumber: SerialNumber})
-  }
+
 }
 
