@@ -44,7 +44,7 @@ export class UserDevicegroup {
     })
     Orderno: number;
 
-    @ManyToOne(type => User, User => User.Id, { eager: true })
+    @ManyToOne(type => User, User => User.Id, { eager: false })
     @JoinColumn({ name: "UserId" })
     // defining this is also optional because by default,
     // the referenced foreign key is named as <column_name>_id or account_id

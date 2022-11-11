@@ -37,7 +37,7 @@ export class UserDevicegroupDevice {
 
     
 
-  @ManyToOne(type => UserDevicegroup, UserDevicegroup => UserDevicegroup.Id,  {eager: false})
+  @ManyToOne(type => UserDevicegroup, UserDevicegroup => UserDevicegroup.Id,  {eager: false, onDelete:'CASCADE'})
   @JoinColumn({name: "GroupId", referencedColumnName: "Id"})    
     Group: UserDevicegroup;
 }

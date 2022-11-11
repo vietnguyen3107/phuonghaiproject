@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
-import { EntityManager, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, EntityManager, Repository, UpdateResult } from 'typeorm';
 import { CreateUserDevicegroupDto } from './dto/create-user-devicegroup.dto';
 import { UserDevicegroup } from './entities/user-devicegroup.entity';
 
@@ -40,11 +40,16 @@ export class UserDevicegroupService {
   }
 
 
+  async delete(Id: number): Promise<DeleteResult> {
+    return await this._repo.delete(Id);
+  }
+
+
   
   async findAllByUser(user: User): Promise<UserDevicegroup[]> {
     return await this._repo.find(
       {
-        relations: ['User'],
+        // relations: ['User'],
         where: {
           'User': { Id: user.Id},
         },
