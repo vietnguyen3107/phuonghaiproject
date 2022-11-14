@@ -62,13 +62,13 @@ export class DatumService {
         }
       }
     }
-
+    datum.AlarmYN = alarmYN;
     //insert datum LATEST
     this.datumlastestRepo
     .createQueryBuilder()
     .insert()
     .values(datum)
-    .orUpdate({overwrite: ['Value', 'Status', 'ReceivedDate', 'Unit', 'CreatedDate', 'CreatedBy']  })
+    .orUpdate({overwrite: ['Value', 'Status', 'ReceivedDate', 'Unit', 'AlarmYN', 'CreatedDate', 'CreatedBy']  })
 	  .execute();
     // .upsert([datum], ['DeviceSerialNumber', 'SensorType']);
 
@@ -83,11 +83,9 @@ export class DatumService {
 
     if(datumObj && datumObj !== null){
       datum.Id = datumObj.Id;
-      datum.AlarmYN = alarmYN;
       await this.datumRepo.update(datum.Id, datum);
 
     }else{
-      datum.AlarmYN = alarmYN;
       let insertresult = await this.datumRepo.insert(datum);
       datum.Id = insertresult.identifiers[0].Id;
     }
@@ -323,12 +321,12 @@ export class DatumService {
     let sql = ''
 
     if (deviceSerialNumber && deviceSerialNumber !== '') {
-      sql = `select t.SensorType, t.DeviceSerialNumber, t.ReceivedDate, t.Value, t.Status, t.Unit
+      sql = `select t.SensorType, t.DeviceSerialNumber, t.ReceivedDate, t.Value, t.Status, t.Unit, t.AlarmYN
       from datum_lastest t
       where  t.DeviceSerialNumber = '${deviceSerialNumber}'`
     }
     else{
-      sql = `select t.SensorType, t.DeviceSerialNumber, t.ReceivedDate, t.Value, t.Status, t.Unit
+      sql = `select t.SensorType, t.DeviceSerialNumber, t.ReceivedDate, t.Value, t.Status, t.Unit, t.AlarmYN
       from datum_lastest t
       `
     }
@@ -344,7 +342,7 @@ export class DatumService {
 
     const entityManager = getManager();
 
-    let sql = `select dt.SensorType, dt.DeviceSerialNumber, dt.ReceivedDate, dt.Value, dt.Status, dt.Unit
+    let sql = `select dt.SensorType, dt.DeviceSerialNumber, dt.ReceivedDate, dt.Value, dt.Status, dt.Unit, dt.AlarmYN
     from datum_lastest dt
     inner join device d on d.SerialNumber= dt.DeviceSerialNumber
     inner join userdevice ud on ud.Device_Id = d.Id

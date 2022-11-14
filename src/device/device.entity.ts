@@ -80,7 +80,7 @@ export class Device {
   // the referenced foreign key is named as <column_name>_id or account_id
   Devicegroup: Devicegroup;
 
-  @OneToMany(type => Sensor, Sensor => Sensor.Device, { eager: true })
+  @OneToMany(type => Sensor, Sensor => Sensor.Device, { eager: false })
   Sensors: Sensor[];
 
   @Column('text')

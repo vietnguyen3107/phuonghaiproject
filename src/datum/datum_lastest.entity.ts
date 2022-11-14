@@ -27,6 +27,9 @@ export class Datum_lastest{
   @Column({ length: 100 })
   Status: string;
 
+  @Column({ default: false })
+  AlarmYN: boolean = false;
+  
   @Column({ length: 100 })
   CreatedBy: string;
   
