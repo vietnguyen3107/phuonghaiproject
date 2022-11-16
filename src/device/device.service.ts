@@ -23,8 +23,8 @@ export class DeviceService {
     try {
          return this.entityManager
     .createQueryBuilder(Device, "d")
-    .innerJoinAndSelect("d.Sensors", "s")
-    .innerJoin("d.userDevices", "ud", "ud.DeviceId = d.Id")
+    .innerJoin("d.userDevices", "ud")
+    .leftJoinAndSelect("d.Sensors", "s")
     .where("ud.User_Id= :userid", { userid: userId })
     .getMany();
     } catch (error) {
