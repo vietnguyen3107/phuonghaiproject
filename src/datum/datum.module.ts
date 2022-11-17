@@ -10,10 +10,12 @@ import { SensorModule } from 'src/sensor/sensor.module';
 import { Sensor } from 'src/sensor/sensor.entity';
 import { Alarm } from 'src/alarm/entities/alarm.entity';
 import { AlarmService } from 'src/alarm/alarm.service';
+import { DeviceService } from 'src/device/device.service';
+import { Device } from 'src/device/device.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Datum, Datum_lastest, Sensor, Alarm]), LabModule, SensorModule],
-  providers: [DatumService, SensorService, AlarmService],
+  imports: [TypeOrmModule.forFeature([Datum, Datum_lastest, Sensor, Alarm, Device]), LabModule, SensorModule],
+  providers: [DatumService, SensorService, AlarmService, DeviceService],
   controllers: [DatumController]
 })
 export class DatumModule {}
