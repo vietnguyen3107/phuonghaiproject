@@ -40,37 +40,51 @@ export class DatumService {
   async create(datum: Datum): Promise<any> {
 
     //check datum data
-    let sensor : Sensor;
-    let alarmYN : boolean = false;
-    sensor = await this.sensorService.findOneByTypeAndDeviceNumber(datum.SensorType, datum.DeviceSerialNumber);
-    if(sensor.MinValue && sensor.MaxValue){
-      //[min,max]
-      if(sensor.MinValue <= sensor.MaxValue){
-        //value ngoai khoang [min,max]
-        if(!(datum.Value >= sensor.MinValue && datum.Value <= sensor.MaxValue)){
-          //save alarm
-          alarmYN = true;
-        }
-      } 
-      //(...,max] - [min,...)
-      else {
-        //value ngoai khoang (-,max] --> [min,+)
-        if(!(datum.Value >= sensor.MinValue || datum.Value <= sensor.MaxValue) ){
-          //save alarm
-          alarmYN = true;
+    let sensor: Sensor;
+    let alarmYN: boolean = false;
 
+    try {
+      sensor = await this.sensorService.findOneByTypeAndDeviceNumber(datum.SensorType, datum.DeviceSerialNumber);
+
+      if (sensor && sensor.MinValue && sensor.MaxValue) {
+        //[min,max]
+        if (sensor.MinValue <= sensor.MaxValue) {
+          //value ngoai khoang [min,max]
+          if (!(datum.Value >= sensor.MinValue && datum.Value <= sensor.MaxValue)) {
+            //save alarm
+            alarmYN = true;
+          }
+        }
+        //(...,max] - [min,...)
+        else {
+          //value ngoai khoang (-,max] --> [min,+)
+          if (!(datum.Value >= sensor.MinValue || datum.Value <= sensor.MaxValue)) {
+            //save alarm
+            alarmYN = true;
+
+          }
         }
       }
+    } catch (error) {
+      console.log(error)
     }
+
     datum.AlarmYN = alarmYN;
+
     //insert datum LATEST
-    this.datumlastestRepo
-    .createQueryBuilder()
-    .insert()
-    .values(datum)
-    .orUpdate({overwrite: ['Value', 'Status', 'ReceivedDate', 'Unit', 'AlarmYN', 'CreatedDate', 'CreatedBy']  })
-	  .execute();
-    // .upsert([datum], ['DeviceSerialNumber', 'SensorType']);
+    try {
+      this.datumlastestRepo
+        .createQueryBuilder()
+        .insert()
+        .values(datum)
+        .orUpdate({ overwrite: ['Value', 'Status', 'ReceivedDate', 'Unit', 'AlarmYN', 'CreatedDate', 'CreatedBy'] })
+        .execute();
+      // .upsert([datum], ['DeviceSerialNumber', 'SensorType']);
+    } catch (error) {
+
+      console.log(error)
+    }
+
 
 
     let datumObj = await this.datumRepo.findOne({
@@ -80,35 +94,47 @@ export class DatumService {
         ReceivedDate: datum.ReceivedDate
       },
     });
+    try {
+      if (datumObj && datumObj !== null) {
+        datum.Id = datumObj.Id;
+        await this.datumRepo.update(datum.Id, datum);
 
-    if(datumObj && datumObj !== null){
-      datum.Id = datumObj.Id;
-      await this.datumRepo.update(datum.Id, datum);
+      } else {
+        let insertresult = await this.datumRepo.insert(datum);
+        datum.Id = insertresult.identifiers[0].Id;
+      }
 
-    }else{
-      let insertresult = await this.datumRepo.insert(datum);
-      datum.Id = insertresult.identifiers[0].Id;
+    } catch (error) {
+
+      console.log(error)
     }
+
 
     //insert alarm
-    if(alarmYN === true){
-      let alarm = new Alarm();
-      alarm.Datum = datum;
-      alarm.Message = `Dữ liệu ngoài khoảng cho phép!`;
-      alarm.DeviceSerialNumber = datum.DeviceSerialNumber;
-      alarm.SensorType = datum.SensorType;
-      alarm.ReceivedDate = datum.ReceivedDate;
-      alarm.MinValue = sensor.MinValue;
-      alarm.MaxValue = sensor.MaxValue;
-      alarm.Value = datum.Value;
+    try {
+      if (alarmYN === true) {
+        let alarm = new Alarm();
+        alarm.Datum = datum;
+        alarm.Message = `Dữ liệu ngoài khoảng cho phép!`;
+        alarm.DeviceSerialNumber = datum.DeviceSerialNumber;
+        alarm.SensorType = datum.SensorType;
+        alarm.ReceivedDate = datum.ReceivedDate;
+        alarm.MinValue = sensor.MinValue;
+        alarm.MaxValue = sensor.MaxValue;
+        alarm.Value = datum.Value;
 
-      alarm.CreatedBy = datum.CreatedBy;
-      alarm.CreatedDate = new Date();
+        alarm.CreatedBy = datum.CreatedBy;
+        alarm.CreatedDate = new Date();
 
-      await this.alarmService.create(alarm);
+        await this.alarmService.create(alarm);
+      }
+    } catch (error) {
+      console.log(error)
+
     }
 
-      return datum;
+
+    return datum;
 
   }
 
@@ -290,7 +316,7 @@ export class DatumService {
       and t.ReceivedDate = tm.MaxDate
       and t.DeviceSerialNumber = '${deviceSerialNumber}'`
     }
-    else{
+    else {
       sql = `select t.SensorType, t.DeviceSerialNumber, t.ReceivedDate, t.Value, t.Status, t.Unit
       from datum t
       inner join (
@@ -325,7 +351,7 @@ export class DatumService {
       from datum_lastest t
       where  t.DeviceSerialNumber = '${deviceSerialNumber}'`
     }
-    else{
+    else {
       sql = `select t.SensorType, t.DeviceSerialNumber, t.ReceivedDate, t.Value, t.Status, t.Unit, t.AlarmYN
       from datum_lastest t
       `
@@ -369,7 +395,7 @@ export class DatumService {
         });
         // Add a branch if it isn't there
         if (isNaN(index)) {
-          depthCursor.push({ name: d['DeviceSerialNumber'], Description: d['Description'] ,DateSync: d['DateSync'], FriendlyName: d['FriendlyName'], Type: d['Type'], Model: d['Model'], children: [] });
+          depthCursor.push({ name: d['DeviceSerialNumber'], Description: d['Description'], DateSync: d['DateSync'], FriendlyName: d['FriendlyName'], Type: d['Type'], Model: d['Model'], children: [] });
           index = depthCursor.length - 1;
         }
         // Now reference the new child array as we go deeper into the tree
@@ -380,7 +406,7 @@ export class DatumService {
     });
 
     //console.log(newData)
-   
+
     return newData
 
   }
@@ -400,7 +426,7 @@ export class DatumService {
    group by DateOnly, SensorType, DeviceSerialNumber 
    order by  DeviceSerialNumber, SensorType, DateOnly`
 
-   //console.log(sql)
+    //console.log(sql)
 
     const rawData = await entityManager.query(sql)
 
