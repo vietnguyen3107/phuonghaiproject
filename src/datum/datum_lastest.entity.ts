@@ -10,9 +10,8 @@ export class Datum_lastest{
   @PrimaryColumn()
   DeviceSerialNumber: string;
 
-
-  @PrimaryColumn()
   @Column({ length: 100 })
+  @PrimaryColumn()
   SensorType: string;
 
   @Column({ type: 'datetime' })
@@ -33,13 +32,13 @@ export class Datum_lastest{
   @Column({ length: 100 })
   CreatedBy: string;
   
-  @CreateDateColumn({ type: 'datetime' })
+  @Column({ type: 'datetime' })
   CreatedDate : Date;
 
-  @UpdateDateColumn({ type: 'datetime' })
+  @Column({ type: 'datetime' })
   UpdatedDate : Date;
 
-  @VersionColumn({ type: 'int' })
+  @Column({ type: 'int' })
   Version: BigInteger;
 }
 

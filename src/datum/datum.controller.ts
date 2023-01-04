@@ -161,26 +161,44 @@ export class DatumController {
   @ApiOperation({ summary: 'Insert danh sách các Datum ' })
   async createBatch(@Body() datums: Datum[], @Req() req) {
 
-    const successfulDatums = []
 
-    for await (const d of datums) {
-      try{
+    for (const d of datums) {
         d.CreatedBy = req.user.Email;
         d.CreatedDate = new Date();
-        let result =  await this.datumService.create(d);
-        if (result.hasOwnProperty('ReceivedDate')){
-          successfulDatums.push(d)
-        }      
-      }
-      catch(error){
-        console.error(error)
-      }
+
     }
 
-    return successfulDatums;
+    try {
+      const result = await this.datumService.creatBatchTransaction(datums);
+      return result;
+    } catch (error) {
+      console.log(error)
+    }
+    return '';
+
   }
 
 
+  @Post('/BatchWithoutTransaction')
+  @ApiOperation({ summary: 'Insert danh sách các Datum ' })
+  async createBatchWithouttransaction(@Body() datums: Datum[], @Req() req) {
+
+
+    for (const d of datums) {
+        d.CreatedBy = req.user.Email;
+        d.CreatedDate = new Date();
+
+    }
+
+    try {
+      const result = await this.datumService.creatBatchWithoutTransaction(datums);
+      return result;
+    } catch (error) {
+      console.log(error)
+    }
+    return '';
+
+  }
   @Put()
   @ApiOperation({ summary: 'Cập nhật Datum' })
   update(@Body() datum: Datum) {

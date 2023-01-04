@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Datum } from './datum.entity'
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { getEntityManagerToken, InjectRepository } from '@nestjs/typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { UpdateResult, DeleteResult, getManager } from 'typeorm';
 
 
@@ -36,7 +36,234 @@ export class DatumService {
     return await this.datumRepo.findOne(Id)
   }
 
+  async creatBatchTransaction(datums: Datum[]): Promise<any> {
+    let result = {success: true, data:{}, msg: ""};
 
+    const queryRunner = getConnection().createQueryRunner();
+
+    await queryRunner.connect();
+
+    //start Transaction
+    await queryRunner.startTransaction();
+
+    const manager = queryRunner.manager;
+    try {
+
+      for (const datum of datums) {
+        let minValue: number = 0;
+        let maxValue: number = 0;
+        let alarmYN: boolean = false;
+
+
+        try {
+          const sensor = await this.sensorService.findOneByTypeAndDeviceNumber(datum.SensorType, datum.DeviceSerialNumber);
+
+          if (sensor && sensor.MinValue && sensor.MaxValue) {
+            minValue = sensor.MinValue;
+            maxValue = sensor.MaxValue;
+            //[min,max]
+            if (sensor.MinValue <= sensor.MaxValue) {
+              //value ngoai khoang [min,max]
+              if (!(datum.Value >= sensor.MinValue && datum.Value <= sensor.MaxValue)) {
+                //save alarm
+                alarmYN = true;
+              }
+            }
+            //(...,max] - [min,...)
+            else {
+              //value ngoai khoang (-,max] --> [min,+)
+              if (!(datum.Value >= sensor.MinValue || datum.Value <= sensor.MaxValue)) {
+                //save alarm
+                alarmYN = true;
+    
+              }
+            }
+          }
+        } catch (error) {
+          console.log(error)
+        }
+        datum.AlarmYN = alarmYN;
+
+        // await manager.getRepository(Datum_lastest)
+        // .createQueryBuilder()
+        // .insert()
+        // .values(datum)
+        // .orUpdate({ overwrite: ['Value', 'Status', 'ReceivedDate', 'Unit', 'AlarmYN', 'CreatedDate', 'CreatedBy'] })
+        // .execute();
+
+        await manager.save(Datum_lastest, datum);
+
+
+      //insert datum
+      let datumObj = await manager.getRepository(Datum).findOne({
+        where: {
+          SensorType: datum.SensorType,
+          DeviceSerialNumber: datum.DeviceSerialNumber,
+          ReceivedDate: datum.ReceivedDate
+        },
+      });
+
+      if (datumObj && datumObj !== null) {
+        datum.Id = datumObj.Id;
+        await manager.getRepository(Datum).update(datum.Id, datum);
+
+      } else {
+        let insertresult = await manager.getRepository(Datum).insert(datum);
+        datum.Id = insertresult.identifiers[0].Id;
+      }
+
+      //insert alarm
+      if (alarmYN === true) {
+        let alarm = new Alarm();
+        alarm.Datum = datum;
+        alarm.Message = `Dữ liệu ngoài khoảng cho phép!`;
+        alarm.DeviceSerialNumber = datum.DeviceSerialNumber;
+        alarm.SensorType = datum.SensorType;
+        alarm.ReceivedDate = datum.ReceivedDate;
+        alarm.MinValue = minValue;
+        alarm.MaxValue = maxValue;
+        alarm.Value = datum.Value;
+
+        alarm.CreatedBy = datum.CreatedBy;
+        alarm.CreatedDate = new Date();
+
+        await manager.getRepository(Alarm).create(alarm);
+      }
+
+      }//end for
+
+      await queryRunner.commitTransaction();
+
+      result.success = true;
+      result.msg = "Insert datums successful!";
+      result.data = datums;
+    } catch (e) {
+      console.log('in transaction...');
+      console.log(e);
+
+      await queryRunner.rollbackTransaction();
+
+      
+      result.success = true;
+      result.msg = "Error! Roolback transaction!";
+      result.data = e.Message;
+    }
+
+    return result;
+  }
+  async creatBatchWithoutTransaction(datums: Datum[]): Promise<any> {
+    let result = {success: true, data:{}, msg: ""};
+
+
+    console.log(new Date());
+    const manager = getManager();
+    try {
+
+      for (const datum of datums) {
+        let minValue: number = 0;
+        let maxValue: number = 0;
+        let alarmYN: boolean = false;
+
+
+        console.log(new Date());
+        try {
+          const sensor = await this.sensorService.findOneByTypeAndDeviceNumber(datum.SensorType, datum.DeviceSerialNumber);
+
+          if (sensor && sensor.MinValue && sensor.MaxValue) {
+            minValue = sensor.MinValue;
+            maxValue = sensor.MaxValue;
+            //[min,max]
+            if (sensor.MinValue <= sensor.MaxValue) {
+              //value ngoai khoang [min,max]
+              if (!(datum.Value >= sensor.MinValue && datum.Value <= sensor.MaxValue)) {
+                //save alarm
+                alarmYN = true;
+              }
+            }
+            //(...,max] - [min,...)
+            else {
+              //value ngoai khoang (-,max] --> [min,+)
+              if (!(datum.Value >= sensor.MinValue || datum.Value <= sensor.MaxValue)) {
+                //save alarm
+                alarmYN = true;
+    
+              }
+            }
+          }
+        } catch (error) {
+          console.log(error)
+        }
+        datum.AlarmYN = alarmYN;
+
+        console.log(new Date());
+        // await manager.getRepository(Datum_lastest)
+        // .createQueryBuilder()
+        // .insert()
+        // .values(datum)
+        // .orUpdate({ overwrite: ['Value', 'Status', 'ReceivedDate', 'Unit', 'AlarmYN', 'CreatedDate', 'CreatedBy'] })
+        // .execute();
+
+        await this.datumlastestRepo.save(datum);
+
+        console.log(new Date());
+
+      //insert datum
+      let datumObj = await this.datumRepo.findOne({
+        where: {
+          SensorType: datum.SensorType,
+          DeviceSerialNumber: datum.DeviceSerialNumber,
+          ReceivedDate: datum.ReceivedDate
+        },
+      });
+
+      if (datumObj && datumObj !== null) {
+        datum.Id = datumObj.Id;
+        await this.datumRepo.update(datum.Id, datum);
+
+      } else {
+        let insertresult = await this.datumRepo.insert(datum);
+        datum.Id = insertresult.identifiers[0].Id;
+      }
+
+      console.log(new Date());
+
+      //insert alarm
+      if (alarmYN === true) {
+        let alarm = new Alarm();
+        alarm.Datum = datum;
+        alarm.Message = `Dữ liệu ngoài khoảng cho phép!`;
+        alarm.DeviceSerialNumber = datum.DeviceSerialNumber;
+        alarm.SensorType = datum.SensorType;
+        alarm.ReceivedDate = datum.ReceivedDate;
+        alarm.MinValue = minValue;
+        alarm.MaxValue = maxValue;
+        alarm.Value = datum.Value;
+
+        alarm.CreatedBy = datum.CreatedBy;
+        alarm.CreatedDate = new Date();
+
+        await manager.getRepository(Alarm).create(alarm);
+      }
+      
+      console.log(new Date());
+}//end for
+
+
+      console.log(new Date());
+      result.success = true;
+      result.msg = "Insert datums successful!";
+      result.data = datums;
+    } catch (e) {
+      console.log('error...');
+      console.log(e);
+
+      result.success = true;
+      result.msg = "Error! Roolback transaction!";
+      result.data = e.Message;
+    }
+
+    return result;
+  }
   async create(datum: Datum): Promise<any> {
 
     //check datum data
@@ -71,47 +298,39 @@ export class DatumService {
 
     datum.AlarmYN = alarmYN;
 
-    //insert datum LATEST
-    try {
-      this.datumlastestRepo
+    await getManager().transaction(async (manager) => {
+
+      // TX: begin()
+
+      //insert datum LATEST
+      await manager.getRepository(Datum_lastest)
         .createQueryBuilder()
         .insert()
         .values(datum)
         .orUpdate({ overwrite: ['Value', 'Status', 'ReceivedDate', 'Unit', 'AlarmYN', 'CreatedDate', 'CreatedBy'] })
         .execute();
       // .upsert([datum], ['DeviceSerialNumber', 'SensorType']);
-    } catch (error) {
-
-      console.log(error)
-    }
 
 
+      //insert datum
+      let datumObj = await manager.getRepository(Datum).findOne({
+        where: {
+          SensorType: datum.SensorType,
+          DeviceSerialNumber: datum.DeviceSerialNumber,
+          ReceivedDate: datum.ReceivedDate
+        },
+      });
 
-    let datumObj = await this.datumRepo.findOne({
-      where: {
-        SensorType: datum.SensorType,
-        DeviceSerialNumber: datum.DeviceSerialNumber,
-        ReceivedDate: datum.ReceivedDate
-      },
-    });
-    try {
       if (datumObj && datumObj !== null) {
         datum.Id = datumObj.Id;
-        await this.datumRepo.update(datum.Id, datum);
+        await manager.getRepository(Datum).update(datum.Id, datum);
 
       } else {
-        let insertresult = await this.datumRepo.insert(datum);
+        let insertresult = await manager.getRepository(Datum).insert(datum);
         datum.Id = insertresult.identifiers[0].Id;
       }
 
-    } catch (error) {
-
-      console.log(error)
-    }
-
-
-    //insert alarm
-    try {
+      //insert alarm
       if (alarmYN === true) {
         let alarm = new Alarm();
         alarm.Datum = datum;
@@ -126,12 +345,10 @@ export class DatumService {
         alarm.CreatedBy = datum.CreatedBy;
         alarm.CreatedDate = new Date();
 
-        await this.alarmService.create(alarm);
+        await manager.getRepository(Alarm).create(alarm);
       }
-    } catch (error) {
-      console.log(error)
-
-    }
+      // TX: commit()
+    });
 
 
     return datum;
