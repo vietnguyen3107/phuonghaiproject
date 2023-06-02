@@ -62,7 +62,7 @@ import { UserDevicegroupDeviceModule } from './user-devicegroup-device/user-devi
       password: 'phuonghai',
       database: 'phuonghai',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      logging: true,
+      logging: false,
       autoLoadEntities: true,
       synchronize: false,
     }),
