@@ -157,7 +157,7 @@ export class DatumController {
     return this.datumService.create(datum);
   }
 
-  @Post('/Batch')
+  @Post('/BatchTransaction')
   @ApiOperation({ summary: 'Insert danh sách các Datum ' })
   async createBatch(@Body() datums: Datum[], @Req() req) {
 
@@ -180,7 +180,7 @@ export class DatumController {
   }
 
 
-  @Post('/BatchWithoutTransaction')
+  @Post('/Batch')
   @ApiOperation({ summary: 'Insert danh sách các Datum ' })
   async createBatchWithouttransaction(@Body() datums: Datum[], @Req() req) {
 
