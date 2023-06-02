@@ -169,7 +169,8 @@ export class DatumController {
     }
 
     try {
-      const result = await this.datumService.creatBatchTransaction(datums);
+      //update this to fix hanging problem
+      const result = await this.datumService.creatBatchWithoutTransaction(datums);
       return result;
     } catch (error) {
       console.log(error)

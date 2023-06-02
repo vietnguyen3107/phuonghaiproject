@@ -382,7 +382,7 @@ export class DatumService {
     where DeviceSerialNumber='${deviceSerialNumber}' 
     order by ReceivedDate DESC limit 0,12`
     }
-    console.log(sql)
+    //console.log(sql)
     const rawData = entityManager.query(sql)
 
     return rawData
