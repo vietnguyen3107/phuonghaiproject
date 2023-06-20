@@ -100,4 +100,34 @@ export class Device {
   @OneToMany(() => UserDevice, userDevice => userDevice.Device)
   @JoinColumn()
   userDevices: UserDevice[];
+
+  //@ThanhNN: add 4 url for security camera links
+  @Column('text')
+  @ApiProperty({
+    description: 'Camera url1',
+    example: 'rtsp://......'
+  })
+  camUrl1: string;
+
+  @Column('text')
+  @ApiProperty({
+    description: 'Camera url1',
+    example: 'rtsp://......'
+  })
+  camUrl2: string;
+
+  @Column('text')
+  @ApiProperty({
+    description: 'Camera url2',
+    example: 'rtsp://......'
+  })
+  camUrl3: string;
+
+  @Column('text')
+  @ApiProperty({
+    description: 'Camera url4',
+    example: 'rtsp://......'
+  })
+  camUrl4: string;
+
 }
